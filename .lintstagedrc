@@ -1,0 +1,12 @@
+{
+  "*": [
+    "prettier --write --ignore-unknown"
+  ],
+  "*.{ts,tsx}": [
+    "eslint --fix",
+    "bash -c 'npx tsc --noEmit'"
+  ],
+  "*.md": [
+    "markdownlint-cli --fix"
+  ]
+}
