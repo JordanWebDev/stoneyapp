@@ -10,7 +10,15 @@ import { useTheme } from '../../contexts/ThemeContext';
  */
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import { View, Text, StyleSheet, Pressable, useWindowDimensions, ScrollView, ActivityIndicator } from 'react-native';
+import {
+    View,
+    Text,
+    StyleSheet,
+    Pressable,
+    useWindowDimensions,
+    ScrollView,
+    ActivityIndicator,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { playClickSound, playCompleteSound } from './SoundEffects';
 
@@ -20,38 +28,41 @@ import { playClickSound, playCompleteSound } from './SoundEffects';
  * e.g., "achâksîch" -> "achaksich"
  */
 export const normalizeStoney = (str: string) => {
-    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return str
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
 };
 
 const POSITIVE_HINTS = [
-    "Like a river finding its way, perseverance is key.",
-    "A single spark can start a great fire.",
-    "Roots grow deep before the tree grows tall.",
-    "Every step forward is a victory in itself.",
-    "Patience is the calm before the dawn.",
+    'Like a river finding its way, perseverance is key.',
+    'A single spark can start a great fire.',
+    'Roots grow deep before the tree grows tall.',
+    'Every step forward is a victory in itself.',
+    'Patience is the calm before the dawn.',
     "Strength isn't just power, it's resilience.",
-    "To learn is to honoring the ancestors.",
-    "Your voice carries the spirit of the language.",
-    "Knowledge is a light that never goes out.",
-    "Small seeds grow into mighty cedars."
+    'To learn is to honoring the ancestors.',
+    'Your voice carries the spirit of the language.',
+    'Knowledge is a light that never goes out.',
+    'Small seeds grow into mighty cedars.',
 ];
 
 const KEYBOARD_ROWS = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '⌫']
+    ['ENTER', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', '⌫'],
 ];
 
 /**
  * Props for the WordleGame component.
  */
 type WordleGameProps = {
-    /** 
+    /**
      * Array of all possible vocabulary words.
-     * The game will filter this list to find valid 4-8 letter words. 
+     * The game will filter this list to find valid 4-8 letter words.
      */
     items: { id: string; stoney: string; english: string; category_id?: string | null }[];
-    /** 
+    /**
      * Array of available lesson categories.
      * Used to provide the player with a category hint for the daily word.
      */
@@ -60,7 +71,7 @@ type WordleGameProps = {
 
 /**
  * WordleGame Component
- * 
+ *
  * Renders the daily Stoney word-guessing game.
  * Features a dynamic grid, a custom on-screen keyboard, and daily streak tracking.
  */
@@ -72,23 +83,25 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
 
     // Filter valid words (single word, 4-8 letters, only letters, categorized)
     const validWords = useMemo(() => {
-        return items.filter(item => {
-            // Must have a valid category
-            if (!item.category_id) return false;
+        return items
+            .filter((item) => {
+                // Must have a valid category
+                if (!item.category_id) return false;
 
-            // Cast to string for comparison in case one is an int and the other is a string
-            const cat = categories.find(c => String(c.id) === String(item.category_id));
-            if (!cat || cat.name.toLowerCase() === 'uncategorized') return false;
+                // Cast to string for comparison in case one is an int and the other is a string
+                const cat = categories.find((c) => String(c.id) === String(item.category_id));
+                if (!cat || cat.name.toLowerCase() === 'uncategorized') return false;
 
-            if (!item.stoney) return false;
-            const word = item.stoney.trim();
-            // No spaces or hyphens, just letters and diacritics
-            if (word.includes(' ') || word.includes('-')) return false;
-            if (word.length < 4 || word.length > 8) return false;
-            // Clean word must only contain letters
-            const clean = normalizeStoney(word);
-            return /^[a-z]+$/.test(clean);
-        }).sort((a, b) => a.stoney.localeCompare(b.stoney));
+                if (!item.stoney) return false;
+                const word = item.stoney.trim();
+                // No spaces or hyphens, just letters and diacritics
+                if (word.includes(' ') || word.includes('-')) return false;
+                if (word.length < 4 || word.length > 8) return false;
+                // Clean word must only contain letters
+                const clean = normalizeStoney(word);
+                return /^[a-z]+$/.test(clean);
+            })
+            .sort((a, b) => a.stoney.localeCompare(b.stoney));
     }, [items, categories]);
 
     // Deterministic Selection based on current local date
@@ -102,7 +115,7 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
         // Simple hash of date string
         let hash = 0;
         for (let i = 0; i < dateStr.length; i++) {
-            hash = ((hash << 5) - hash) + dateStr.charCodeAt(i);
+            hash = (hash << 5) - hash + dateStr.charCodeAt(i);
             hash |= 0;
         }
 
@@ -115,7 +128,7 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
         const hintIndex = Math.abs(hash) % POSITIVE_HINTS.length;
 
         const categoryName = targetObj.category_id
-            ? categories.find(c => c.id === targetObj.category_id)?.name || 'Uncategorized'
+            ? categories.find((c) => c.id === targetObj.category_id)?.name || 'Uncategorized'
             : 'Uncategorized';
 
         return {
@@ -124,7 +137,7 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
             targetClean,
             english: targetObj.english,
             categoryName,
-            hint: POSITIVE_HINTS[hintIndex]
+            hint: POSITIVE_HINTS[hintIndex],
         };
     }, [validWords, categories]);
 
@@ -163,51 +176,59 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
     // Save state when it changes
     useEffect(() => {
         if (!isLoaded || !dailyData) return;
-        AsyncStorage.setItem('wordle_state', JSON.stringify({
-            dateStr: dailyData.dateStr,
-            guesses,
-            gameState
-        }));
+        AsyncStorage.setItem(
+            'wordle_state',
+            JSON.stringify({
+                dateStr: dailyData.dateStr,
+                guesses,
+                gameState,
+            })
+        );
     }, [guesses, gameState, isLoaded, dailyData]);
 
-    const handleKeyPress = useCallback((key: string) => {
-        if (gameState !== 'playing' || !dailyData) return;
-        playClickSound();
+    const handleKeyPress = useCallback(
+        (key: string) => {
+            if (gameState !== 'playing' || !dailyData) return;
+            playClickSound();
 
-        if (key === 'ENTER') {
-            if (currentGuess.length !== dailyData.targetClean.length) {
-                // Not enough letters
-                return;
-            }
-            const newGuesses = [...guesses, currentGuess];
-            setGuesses(newGuesses);
+            if (key === 'ENTER') {
+                if (currentGuess.length !== dailyData.targetClean.length) {
+                    // Not enough letters
+                    return;
+                }
+                const newGuesses = [...guesses, currentGuess];
+                setGuesses(newGuesses);
 
-            if (currentGuess === dailyData.targetClean) {
-                setGameState('won');
-                playCompleteSound();
-                const newStreak = streak + 1;
-                setStreak(newStreak);
-                AsyncStorage.setItem('wordle_streak', newStreak.toString());
-            } else if (newGuesses.length >= 6) {
-                setGameState('lost');
-                setStreak(0);
-                AsyncStorage.setItem('wordle_streak', '0');
+                if (currentGuess === dailyData.targetClean) {
+                    setGameState('won');
+                    playCompleteSound();
+                    const newStreak = streak + 1;
+                    setStreak(newStreak);
+                    AsyncStorage.setItem('wordle_streak', newStreak.toString());
+                } else if (newGuesses.length >= 6) {
+                    setGameState('lost');
+                    setStreak(0);
+                    AsyncStorage.setItem('wordle_streak', '0');
+                }
+                setCurrentGuess('');
+            } else if (key === '⌫') {
+                setCurrentGuess((prev) => prev.slice(0, -1));
+            } else {
+                if (currentGuess.length < dailyData.targetClean.length) {
+                    setCurrentGuess((prev) => prev + key.toLowerCase());
+                }
             }
-            setCurrentGuess('');
-        } else if (key === '⌫') {
-            setCurrentGuess(prev => prev.slice(0, -1));
-        } else {
-            if (currentGuess.length < dailyData.targetClean.length) {
-                setCurrentGuess(prev => prev + key.toLowerCase());
-            }
-        }
-    }, [currentGuess, guesses, gameState, dailyData, streak]);
+        },
+        [currentGuess, guesses, gameState, dailyData, streak]
+    );
 
     if (!dailyData) {
         return (
             <View style={styles.center}>
                 <ActivityIndicator color="#ea580c" />
-                <Text style={{ marginTop: 12, color: colors.textMutedDark }}>Preparing game...</Text>
+                <Text style={{ marginTop: 12, color: colors.textMutedDark }}>
+                    Preparing game...
+                </Text>
             </View>
         );
     }
@@ -218,12 +239,15 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
     /**
      * Evaluates the color status (Green, Yellow, Gray) of a specific letter in a guess.
      * Handles duplicate letters correctly (e.g., guessing "APPLE" when the target is "PAPER").
-     * 
+     *
      * @param guessString The full string the user guessed
      * @param index The index of the letter currently being evaluated
      * @returns 'correct' (Green), 'present' (Yellow), or 'absent' (Gray)
      */
-    const getLetterStatus = (guessString: string, index: number): 'correct' | 'present' | 'absent' | 'empty' => {
+    const getLetterStatus = (
+        guessString: string,
+        index: number
+    ): 'correct' | 'present' | 'absent' | 'empty' => {
         if (!guessString) return 'empty';
         const letter = guessString[index];
 
@@ -233,10 +257,12 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
         // 2. Letter exists in the target word, but might be Yellow or Gray
         if (targetClean.includes(letter)) {
             // How many times does this letter appear in the actual target word?
-            let targetCount = targetClean.split('').filter(l => l === letter).length;
+            let targetCount = targetClean.split('').filter((l) => l === letter).length;
 
             // How many times have we already awarded a 'Green' for this letter in the current guess?
-            let correctCount = guessString.split('').filter((l, i) => l === letter && targetClean[i] === letter).length;
+            let correctCount = guessString
+                .split('')
+                .filter((l, i) => l === letter && targetClean[i] === letter).length;
 
             // How many 'Yellows' have we awarded to this letter *so far* scanning left-to-right?
             let currentYellowCount = 0;
@@ -258,7 +284,7 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
 
     // Evaluate keyboard colors
     const keyColors: Record<string, 'correct' | 'present' | 'absent'> = {};
-    guesses.forEach(guess => {
+    guesses.forEach((guess) => {
         for (let i = 0; i < wordLength; i++) {
             const letter = guess[i].toUpperCase();
             const status = getLetterStatus(guess, i);
@@ -274,7 +300,10 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
     });
 
     return (
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+        >
             <View style={styles.header}>
                 <Text style={styles.title}>Daily Stoney Word</Text>
                 <Text style={styles.streak}>🔥 Streak: {streak}</Text>
@@ -288,35 +317,60 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
             {/* Game Grid */}
             <View style={styles.grid}>
                 {Array.from({ length: 6 }).map((_, rowIndex) => {
-                    const guess = guesses[rowIndex] || (rowIndex === guesses.length ? currentGuess : '');
+                    const guess =
+                        guesses[rowIndex] || (rowIndex === guesses.length ? currentGuess : '');
                     const isCompleted = rowIndex < guesses.length;
 
                     // Dynamic box size for mobile
                     const availableWidth = Math.min(width - 32, 600);
-                    const maxBoxWidth = Math.floor((availableWidth - (wordLength - 1) * 8) / wordLength);
+                    const maxBoxWidth = Math.floor(
+                        (availableWidth - (wordLength - 1) * 8) / wordLength
+                    );
                     const finalBoxSize = Math.min(48, maxBoxWidth);
 
                     return (
                         <View key={rowIndex} style={styles.row}>
                             {Array.from({ length: wordLength }).map((_, colIndex) => {
                                 const letter = guess[colIndex] || '';
-                                let boxStyle: any = { ...styles.box, width: finalBoxSize, height: finalBoxSize };
-                                let textStyle: any = { ...styles.boxText, fontSize: finalBoxSize * 0.5 };
+                                let boxStyle: any = {
+                                    ...styles.box,
+                                    width: finalBoxSize,
+                                    height: finalBoxSize,
+                                };
+                                let textStyle: any = {
+                                    ...styles.boxText,
+                                    fontSize: finalBoxSize * 0.5,
+                                };
 
                                 if (isCompleted) {
                                     const status = getLetterStatus(guess, colIndex);
                                     if (status === 'correct') {
-                                        boxStyle = { ...boxStyle, backgroundColor: colors.success, borderColor: colors.success } as any;
+                                        boxStyle = {
+                                            ...boxStyle,
+                                            backgroundColor: colors.success,
+                                            borderColor: colors.success,
+                                        } as any;
                                         textStyle = { ...textStyle, color: colors.surface } as any;
                                     } else if (status === 'present') {
-                                        boxStyle = { ...boxStyle, backgroundColor: colors.warning, borderColor: colors.warning } as any;
+                                        boxStyle = {
+                                            ...boxStyle,
+                                            backgroundColor: colors.warning,
+                                            borderColor: colors.warning,
+                                        } as any;
                                         textStyle = { ...textStyle, color: colors.surface } as any;
                                     } else {
-                                        boxStyle = { ...boxStyle, backgroundColor: colors.textMutedDark, borderColor: colors.textMutedDark } as any;
+                                        boxStyle = {
+                                            ...boxStyle,
+                                            backgroundColor: colors.textMutedDark,
+                                            borderColor: colors.textMutedDark,
+                                        } as any;
                                         textStyle = { ...textStyle, color: colors.surface } as any;
                                     }
                                 } else if (letter) {
-                                    boxStyle = { ...boxStyle, borderColor: colors.textMuted } as any;
+                                    boxStyle = {
+                                        ...boxStyle,
+                                        borderColor: colors.textMuted,
+                                    } as any;
                                 }
 
                                 return (
@@ -347,7 +401,7 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
             <View style={styles.keyboard}>
                 {KEYBOARD_ROWS.map((row, rIdx) => (
                     <View key={rIdx} style={styles.keyRow}>
-                        {row.map(key => {
+                        {row.map((key) => {
                             let keyStyle: any = styles.key;
                             let keyText: any = styles.keyText;
 
@@ -384,136 +438,137 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
     );
 }
 
-const createStyles = (colors: any) => StyleSheet.create({
-    center: {
-        flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center'
-    },
-    scrollContent: {
-        paddingBottom: 40,
-        alignItems: 'center',
-    },
-    header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        width: '100%',
-        paddingVertical: 16,
-        paddingHorizontal: 20,
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: colors.primary,
-    },
-    streak: {
-        fontSize: 16,
-        fontWeight: '600',
-        color: colors.warning,
-    },
-    hintBox: {
-        backgroundColor: colors.successBg,
-        padding: 16,
-        borderRadius: 12,
-        marginBottom: 24,
-        width: '90%',
-        maxWidth: 500,
-        borderWidth: 1,
-        borderColor: colors.successBorder,
-        alignItems: 'center',
-    },
-    hintMessage: {
-        fontSize: 16,
-        fontStyle: 'italic',
-        color: colors.successTextDark,
-        textAlign: 'center',
-        marginBottom: 6,
-    },
-    hintCategory: {
-        fontSize: 13,
-        fontWeight: '600',
-        color: colors.successText,
-    },
-    grid: {
-        gap: 8,
-        marginBottom: 32,
-    },
-    row: {
-        flexDirection: 'row',
-        gap: 8,
-    },
-    box: {
-        borderWidth: 2,
-        borderColor: colors.borderDark,
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: colors.surface,
-    },
-    boxText: {
-        fontWeight: 'bold',
-        color: colors.textDark,
-    },
-    keyboard: {
-        width: '100%',
-        maxWidth: 600,
-        gap: 8,
-        alignItems: 'center',
-    },
-    keyRow: {
-        flexDirection: 'row',
-        gap: 6,
-    },
-    key: {
-        backgroundColor: colors.border,
-        paddingVertical: 14,
-        paddingHorizontal: 12,
-        borderRadius: 6,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    keyText: {
-        fontSize: 16,
-        fontWeight: 'bold',
-        color: colors.textSecondary,
-    },
-    gameOver: {
-        backgroundColor: colors.background,
-        padding: 24,
-        borderRadius: 16,
-        alignItems: 'center',
-        marginBottom: 24,
-        width: '90%',
-        maxWidth: 400,
-        borderWidth: 1,
-        borderColor: colors.border,
-    },
-    gameOverTitle: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: colors.primary,
-        marginBottom: 16,
-    },
-    answerLabel: {
-        fontSize: 14,
-        color: colors.textMutedDark,
-        marginBottom: 4,
-    },
-    answerWord: {
-        fontSize: 28,
-        fontWeight: 'bold',
-        color: colors.textDark,
-        marginBottom: 4,
-    },
-    answerEnglish: {
-        fontSize: 16,
-        color: colors.textSubtle,
-        fontStyle: 'italic',
-        marginBottom: 16,
-    },
-    comeBack: {
-        fontSize: 15,
-        fontWeight: '500',
-        color: colors.primary,
-    }
-});
+const createStyles = (colors: any) =>
+    StyleSheet.create({
+        center: {
+            flex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        scrollContent: {
+            paddingBottom: 40,
+            alignItems: 'center',
+        },
+        header: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+            paddingVertical: 16,
+            paddingHorizontal: 20,
+        },
+        title: {
+            fontSize: 22,
+            fontWeight: 'bold',
+            color: colors.primary,
+        },
+        streak: {
+            fontSize: 16,
+            fontWeight: '600',
+            color: colors.warning,
+        },
+        hintBox: {
+            backgroundColor: colors.successBg,
+            padding: 16,
+            borderRadius: 12,
+            marginBottom: 24,
+            width: '90%',
+            maxWidth: 500,
+            borderWidth: 1,
+            borderColor: colors.successBorder,
+            alignItems: 'center',
+        },
+        hintMessage: {
+            fontSize: 16,
+            fontStyle: 'italic',
+            color: colors.successTextDark,
+            textAlign: 'center',
+            marginBottom: 6,
+        },
+        hintCategory: {
+            fontSize: 13,
+            fontWeight: '600',
+            color: colors.successText,
+        },
+        grid: {
+            gap: 8,
+            marginBottom: 32,
+        },
+        row: {
+            flexDirection: 'row',
+            gap: 8,
+        },
+        box: {
+            borderWidth: 2,
+            borderColor: colors.borderDark,
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: colors.surface,
+        },
+        boxText: {
+            fontWeight: 'bold',
+            color: colors.textDark,
+        },
+        keyboard: {
+            width: '100%',
+            maxWidth: 600,
+            gap: 8,
+            alignItems: 'center',
+        },
+        keyRow: {
+            flexDirection: 'row',
+            gap: 6,
+        },
+        key: {
+            backgroundColor: colors.border,
+            paddingVertical: 14,
+            paddingHorizontal: 12,
+            borderRadius: 6,
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        keyText: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            color: colors.textSecondary,
+        },
+        gameOver: {
+            backgroundColor: colors.background,
+            padding: 24,
+            borderRadius: 16,
+            alignItems: 'center',
+            marginBottom: 24,
+            width: '90%',
+            maxWidth: 400,
+            borderWidth: 1,
+            borderColor: colors.border,
+        },
+        gameOverTitle: {
+            fontSize: 24,
+            fontWeight: 'bold',
+            color: colors.primary,
+            marginBottom: 16,
+        },
+        answerLabel: {
+            fontSize: 14,
+            color: colors.textMutedDark,
+            marginBottom: 4,
+        },
+        answerWord: {
+            fontSize: 28,
+            fontWeight: 'bold',
+            color: colors.textDark,
+            marginBottom: 4,
+        },
+        answerEnglish: {
+            fontSize: 16,
+            color: colors.textSubtle,
+            fontStyle: 'italic',
+            marginBottom: 16,
+        },
+        comeBack: {
+            fontSize: 15,
+            fontWeight: '500',
+            color: colors.primary,
+        },
+    });

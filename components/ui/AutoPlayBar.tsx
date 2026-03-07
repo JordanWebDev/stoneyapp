@@ -40,7 +40,6 @@ export default function AutoPlayBar({
     const styles = useMemo(() => createStyles(colors), [colors]);
     return (
         <View style={styles.bar}>
-
             {/* Play / Pause button */}
             <Pressable
                 style={({ pressed }) => [styles.playBtn, pressed && styles.btnPressed]}
@@ -63,7 +62,6 @@ export default function AutoPlayBar({
             <Text style={styles.counter}>
                 {currentIndex + 1} / {totalItems}
             </Text>
-
         </View>
     );
 }
@@ -71,50 +69,51 @@ export default function AutoPlayBar({
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
-const createStyles = (colors: any) => StyleSheet.create({
-    bar: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: colors.primary,
-        paddingVertical: 10,
-        paddingHorizontal: 16,
-        borderRadius: 10,
-        gap: 12,
-    },
+const createStyles = (colors: any) =>
+    StyleSheet.create({
+        bar: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            backgroundColor: colors.primary,
+            paddingVertical: 10,
+            paddingHorizontal: 16,
+            borderRadius: 10,
+            gap: 12,
+        },
 
-    // Play/Pause button
-    playBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-        backgroundColor: 'rgba(255,255,255,0.15)',
-        paddingVertical: 8,
-        paddingHorizontal: 14,
-        borderRadius: 8,
-    },
-    playIcon: { fontSize: 14 },
-    playLabel: { color: colors.surface, fontSize: 13, fontWeight: '600' },
+        // Play/Pause button
+        playBtn: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 6,
+            backgroundColor: 'rgba(255,255,255,0.15)',
+            paddingVertical: 8,
+            paddingHorizontal: 14,
+            borderRadius: 8,
+        },
+        playIcon: { fontSize: 14 },
+        playLabel: { color: colors.surface, fontSize: 13, fontWeight: '600' },
 
-    // Speed button
-    speedBtn: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 4,
-        backgroundColor: 'rgba(255,255,255,0.1)',
-        paddingVertical: 8,
-        paddingHorizontal: 12,
-        borderRadius: 8,
-    },
-    speedIcon: { fontSize: 13 },
-    speedLabel: { color: 'rgba(255,255,255,0.8)', fontSize: 13, fontWeight: '600' },
+        // Speed button
+        speedBtn: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 4,
+            backgroundColor: 'rgba(255,255,255,0.1)',
+            paddingVertical: 8,
+            paddingHorizontal: 12,
+            borderRadius: 8,
+        },
+        speedIcon: { fontSize: 13 },
+        speedLabel: { color: 'rgba(255,255,255,0.8)', fontSize: 13, fontWeight: '600' },
 
-    btnPressed: { opacity: 0.7 },
+        btnPressed: { opacity: 0.7 },
 
-    // Counter
-    counter: {
-        marginLeft: 'auto',            // Push to the right
-        color: colors.white60,
-        fontSize: 13,
-        fontWeight: '600',
-    },
-});
+        // Counter
+        counter: {
+            marginLeft: 'auto', // Push to the right
+            color: colors.white60,
+            fontSize: 13,
+            fontWeight: '600',
+        },
+    });

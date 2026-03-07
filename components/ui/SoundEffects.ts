@@ -31,7 +31,12 @@ const getAudioContext = (): AudioContext | null => {
  * Play a short tone with the given frequency and duration.
  * Uses Web Audio API oscillator for instant, lightweight sounds.
  */
-const playTone = (frequency: number, duration: number, type: OscillatorType = 'sine', volume = 0.15) => {
+const playTone = (
+    frequency: number,
+    duration: number,
+    type: OscillatorType = 'sine',
+    volume = 0.15
+) => {
     const ctx = getAudioContext();
     if (!ctx) return;
 
@@ -54,15 +59,15 @@ const playTone = (frequency: number, duration: number, type: OscillatorType = 's
 
 /** Happy ascending two-note chime — for correct answers */
 export const playCorrectSound = () => {
-    playTone(523, 0.15, 'sine', 0.12);    // C5
+    playTone(523, 0.15, 'sine', 0.12); // C5
     setTimeout(() => {
-        playTone(659, 0.25, 'sine', 0.12);  // E5
+        playTone(659, 0.25, 'sine', 0.12); // E5
     }, 120);
 };
 
 /** Sad descending buzz — for wrong answers */
 export const playWrongSound = () => {
-    playTone(330, 0.12, 'square', 0.08);  // E4
+    playTone(330, 0.12, 'square', 0.08); // E4
     setTimeout(() => {
         playTone(262, 0.3, 'square', 0.08); // C4
     }, 100);
@@ -70,7 +75,7 @@ export const playWrongSound = () => {
 
 /** Soft click — for navigation, card selection */
 export const playClickSound = () => {
-    playTone(880, 0.06, 'sine', 0.06);    // A5 — short and subtle
+    playTone(880, 0.06, 'sine', 0.06); // A5 — short and subtle
 };
 
 /** Card flip whoosh — for flashcard reveal */
@@ -83,14 +88,14 @@ export const playFlipSound = () => {
 
 /** Match found — celebratory triple chime */
 export const playMatchSound = () => {
-    playTone(523, 0.1, 'sine', 0.1);      // C5
-    setTimeout(() => playTone(659, 0.1, 'sine', 0.1), 80);  // E5
+    playTone(523, 0.1, 'sine', 0.1); // C5
+    setTimeout(() => playTone(659, 0.1, 'sine', 0.1), 80); // E5
     setTimeout(() => playTone(784, 0.2, 'sine', 0.1), 160); // G5
 };
 
 /** Level complete — triumphant fanfare */
 export const playCompleteSound = () => {
-    playTone(523, 0.12, 'sine', 0.12);    // C5
+    playTone(523, 0.12, 'sine', 0.12); // C5
     setTimeout(() => playTone(659, 0.12, 'sine', 0.12), 100); // E5
     setTimeout(() => playTone(784, 0.12, 'sine', 0.12), 200); // G5
     setTimeout(() => playTone(1047, 0.3, 'sine', 0.12), 300); // C6

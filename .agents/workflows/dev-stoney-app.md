@@ -14,10 +14,10 @@ description: How to run and develop the Stoney Language Learning App
 
 1. Ensure `.env` file exists in `stoney-app/` with:
 
-   ```
-   EXPO_PUBLIC_SUPABASE_URL=https://rohyoxuszxrnylocolqu.supabase.co
-   EXPO_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
-   ```
+    ```
+    EXPO_PUBLIC_SUPABASE_URL=https://rohyoxuszxrnylocolqu.supabase.co
+    EXPO_PUBLIC_SUPABASE_ANON_KEY=<your-anon-key>
+    ```
 
 ## Running the Dev Server
 
@@ -25,9 +25,9 @@ description: How to run and develop the Stoney Language Learning App
 
 1. Navigate to the app directory and start the Expo dev server:
 
-   ```bash
-   cd "c:/Users/bigon/Desktop/New folder/stoney-app" && npx expo start --web
-   ```
+    ```bash
+    cd "c:/Users/bigon/Desktop/New folder/stoney-app" && npx expo start --web
+    ```
 
 2. Open <http://localhost:8081> in a browser
 
@@ -35,11 +35,11 @@ description: How to run and develop the Stoney Language Learning App
 
 1. To re-ingest vocabulary from the Excel file:
 
-   ```bash
-   cd "c:/Users/bigon/Desktop/New folder" && node import_excel.js
-   ```
+    ```bash
+    cd "c:/Users/bigon/Desktop/New folder" && node import_excel.js
+    ```
 
-   - Requires `SUPABASE_KEY` set to the `service_role` key in `.env`
+    - Requires `SUPABASE_KEY` set to the `service_role` key in `.env`
 
 ## Project Structure
 
@@ -76,11 +76,11 @@ stoney-app/
 1. Create new component in `components/ui/`
 2. Import and wire it into `app/index.tsx` tab system
 3. Use the cyberpunk theme colors:
-   - Background: `#060d0d`, `#0a0f0f`, `#0f1a1a`
-   - Teal accent: `#2dd4bf`, `#0d9488`, `#134e4a`
-   - Red accent: `#dc2626`, `#7f1d1d`
-   - Text: `#e8dcc8` (cream), `#5eead4` (teal)
-   - Font: `monospace`
+    - Background: `#060d0d`, `#0a0f0f`, `#0f1a1a`
+    - Teal accent: `#2dd4bf`, `#0d9488`, `#134e4a`
+    - Red accent: `#dc2626`, `#7f1d1d`
+    - Text: `#e8dcc8` (cream), `#5eead4` (teal)
+    - Font: `monospace`
 
 ## Deployment
 

@@ -16,7 +16,7 @@ import { useTheme } from '../../contexts/ThemeContext';
  * - items: Array of vocabulary items (needs at least 4)
  */
 
-import { useMemo,  useState, useEffect, useCallback  } from 'react';
+import { useMemo, useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, Pressable, useWindowDimensions } from 'react-native';
 import { playClickSound, playMatchSound, playWrongSound, playCompleteSound } from './SoundEffects';
 
@@ -28,25 +28,25 @@ interface MatchingGameProps {
 
 // Type for each card in the game grid
 type Card = {
-    id: string;             // Unique card identifier (e.g., "s-123" or "e-123")
-    text: string;           // The word shown when flipped
+    id: string; // Unique card identifier (e.g., "s-123" or "e-123")
+    text: string; // The word shown when flipped
     type: 'stoney' | 'english'; // Which language this card shows
-    vocabId: string;        // Links Stoney and English cards for the same word
+    vocabId: string; // Links Stoney and English cards for the same word
 };
 
 export default function MatchingGame({ items }: MatchingGameProps) {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
     const { width } = useWindowDimensions();
-    const columns = width < 600 ? 2 : 4;      // Fewer columns on mobile
-    const pairCount = width < 600 ? 4 : 6;    // Fewer pairs on mobile
+    const columns = width < 600 ? 2 : 4; // Fewer columns on mobile
+    const pairCount = width < 600 ? 4 : 6; // Fewer pairs on mobile
 
     // Game state
-    const [cards, setCards] = useState<Card[]>([]);           // All cards in the grid
-    const [flipped, setFlipped] = useState<string[]>([]);     // Currently flipped card IDs (max 2)
+    const [cards, setCards] = useState<Card[]>([]); // All cards in the grid
+    const [flipped, setFlipped] = useState<string[]>([]); // Currently flipped card IDs (max 2)
     const [matched, setMatched] = useState<Set<string>>(new Set()); // IDs of successfully matched cards
-    const [moves, setMoves] = useState(0);                    // Move counter
-    const [complete, setComplete] = useState(false);          // Is the game finished?
+    const [moves, setMoves] = useState(0); // Move counter
+    const [complete, setComplete] = useState(false); // Is the game finished?
 
     // Start a new game whenever items change
     useEffect(() => {
@@ -66,7 +66,12 @@ export default function MatchingGame({ items }: MatchingGameProps) {
         pool.forEach((item) => {
             // Create a Stoney card and an English card for each word
             deck.push({ id: `s-${item.id}`, text: item.stoney, type: 'stoney', vocabId: item.id });
-            deck.push({ id: `e-${item.id}`, text: item.english, type: 'english', vocabId: item.id });
+            deck.push({
+                id: `e-${item.id}`,
+                text: item.english,
+                type: 'english',
+                vocabId: item.id,
+            });
         });
 
         // Shuffle the deck randomly
@@ -84,42 +89,45 @@ export default function MatchingGame({ items }: MatchingGameProps) {
      * - If they match, mark them as matched
      * - If they don't match, flip them back after 800ms
      */
-    const handleFlip = useCallback((cardId: string) => {
-        // Don't allow flipping if 2 cards already up, or card already flipped/matched
-        if (flipped.length >= 2 || flipped.includes(cardId) || matched.has(cardId)) return;
+    const handleFlip = useCallback(
+        (cardId: string) => {
+            // Don't allow flipping if 2 cards already up, or card already flipped/matched
+            if (flipped.length >= 2 || flipped.includes(cardId) || matched.has(cardId)) return;
 
-        const next = [...flipped, cardId];
-        setFlipped(next);
+            const next = [...flipped, cardId];
+            setFlipped(next);
 
-        // Check for a match when 2 cards are flipped
-        if (next.length === 2) {
-            setMoves((p) => p + 1);
-            const [a, b] = next;
-            const c1 = cards.find((c) => c.id === a);
-            const c2 = cards.find((c) => c.id === b);
+            // Check for a match when 2 cards are flipped
+            if (next.length === 2) {
+                setMoves((p) => p + 1);
+                const [a, b] = next;
+                const c1 = cards.find((c) => c.id === a);
+                const c2 = cards.find((c) => c.id === b);
 
-            // Match = same vocabId but different type (one Stoney, one English)
-            if (c1 && c2 && c1.vocabId === c2.vocabId && c1.type !== c2.type) {
-                // Cards match! Mark both as matched
-                const nm = new Set(matched);
-                nm.add(a);
-                nm.add(b);
-                setMatched(nm);
-                playMatchSound();  // Celebratory chime
+                // Match = same vocabId but different type (one Stoney, one English)
+                if (c1 && c2 && c1.vocabId === c2.vocabId && c1.type !== c2.type) {
+                    // Cards match! Mark both as matched
+                    const nm = new Set(matched);
+                    nm.add(a);
+                    nm.add(b);
+                    setMatched(nm);
+                    playMatchSound(); // Celebratory chime
 
-                // Check if all cards are matched (game complete)
-                if (nm.size === cards.length) {
-                    setComplete(true);
-                    playCompleteSound();  // Triumphant fanfare
+                    // Check if all cards are matched (game complete)
+                    if (nm.size === cards.length) {
+                        setComplete(true);
+                        playCompleteSound(); // Triumphant fanfare
+                    }
+                    setTimeout(() => setFlipped([]), 400);
+                } else {
+                    // No match — flip cards back after a short delay
+                    playWrongSound();
+                    setTimeout(() => setFlipped([]), 800);
                 }
-                setTimeout(() => setFlipped([]), 400);
-            } else {
-                // No match — flip cards back after a short delay
-                playWrongSound();
-                setTimeout(() => setFlipped([]), 800);
             }
-        }
-    }, [flipped, matched, cards]);
+        },
+        [flipped, matched, cards]
+    );
 
     // Need at least 4 items to play
     if (items.length < 4) {
@@ -132,11 +140,12 @@ export default function MatchingGame({ items }: MatchingGameProps) {
 
     return (
         <View style={styles.container}>
-
             {/* Game stats — moves and matches */}
             <View style={styles.statsRow}>
                 <Text style={styles.stat}>Moves: {moves}</Text>
-                <Text style={styles.stat}>Matched: {matched.size / 2} / {cards.length / 2}</Text>
+                <Text style={styles.stat}>
+                    Matched: {matched.size / 2} / {cards.length / 2}
+                </Text>
             </View>
 
             {/* Success banner when all pairs are found */}
@@ -149,16 +158,19 @@ export default function MatchingGame({ items }: MatchingGameProps) {
             {/* Card grid */}
             <View style={[styles.grid, { maxWidth: columns * 180 }]}>
                 {cards.map((card) => {
-                    const isUp = flipped.includes(card.id) || matched.has(card.id);  // Is this card showing?
-                    const isDone = matched.has(card.id);                              // Is this card matched?
+                    const isUp = flipped.includes(card.id) || matched.has(card.id); // Is this card showing?
+                    const isDone = matched.has(card.id); // Is this card matched?
 
                     return (
                         <Pressable
                             key={card.id}
                             style={({ pressed }) => [
                                 styles.tile,
-                                { width: `${100 / columns - 3}%` },                        // Responsive width
-                                isUp && (card.type === 'stoney' ? styles.tileStoney : styles.tileEnglish),
+                                { width: `${100 / columns - 3}%` }, // Responsive width
+                                isUp &&
+                                    (card.type === 'stoney'
+                                        ? styles.tileStoney
+                                        : styles.tileEnglish),
                                 isDone && styles.tileDone,
                                 pressed && !isUp && styles.tilePressed,
                             ]}
@@ -167,8 +179,12 @@ export default function MatchingGame({ items }: MatchingGameProps) {
                             {isUp ? (
                                 // Card is face-up — show the word
                                 <>
-                                    <Text style={styles.tileType}>{card.type === 'stoney' ? 'STN' : 'ENG'}</Text>
-                                    <Text style={styles.tileText} numberOfLines={3}>{card.text}</Text>
+                                    <Text style={styles.tileType}>
+                                        {card.type === 'stoney' ? 'STN' : 'ENG'}
+                                    </Text>
+                                    <Text style={styles.tileText} numberOfLines={3}>
+                                        {card.text}
+                                    </Text>
                                 </>
                             ) : (
                                 // Card is face-down — show "?"
@@ -188,7 +204,6 @@ export default function MatchingGame({ items }: MatchingGameProps) {
                     <Text style={styles.restartText}>Play Again</Text>
                 </Pressable>
             )}
-
         </View>
     );
 }
@@ -196,43 +211,79 @@ export default function MatchingGame({ items }: MatchingGameProps) {
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
-const createStyles = (colors: any) => StyleSheet.create({
-    container: { flex: 1, backgroundColor: colors.surface, padding: 24 },
-    empty: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-    emptyText: { color: colors.textMuted, fontSize: 15 },
+const createStyles = (colors: any) =>
+    StyleSheet.create({
+        container: { flex: 1, backgroundColor: colors.surface, padding: 24 },
+        empty: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+        emptyText: { color: colors.textMuted, fontSize: 15 },
 
-    // Stats row
-    statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
-    stat: { color: colors.textMutedDark, fontSize: 13, fontWeight: '600' },
+        // Stats row
+        statsRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 16 },
+        stat: { color: colors.textMutedDark, fontSize: 13, fontWeight: '600' },
 
-    // Success banner
-    completeBanner: { backgroundColor: colors.successBg, padding: 12, borderRadius: 10, marginBottom: 16 },
-    completeText: { fontSize: 15, fontWeight: '700', color: colors.successText, textAlign: 'center' },
+        // Success banner
+        completeBanner: {
+            backgroundColor: colors.successBg,
+            padding: 12,
+            borderRadius: 10,
+            marginBottom: 16,
+        },
+        completeText: {
+            fontSize: 15,
+            fontWeight: '700',
+            color: colors.successText,
+            textAlign: 'center',
+        },
 
-    // Card grid
-    grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 10, alignSelf: 'center' },
+        // Card grid
+        grid: {
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+            gap: 10,
+            alignSelf: 'center',
+        },
 
-    // Individual card tile
-    tile: {
-        minHeight: 110,                   // Tall enough to read comfortably
-        backgroundColor: colors.surfaceAlt,
-        borderRadius: 14,
-        borderWidth: 1.5,
-        borderColor: colors.border,
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 12,
-    },
-    tileStoney: { backgroundColor: colors.primaryBg, borderColor: colors.primary },   // Teal for Stoney
-    tileEnglish: { backgroundColor: '#fefce8', borderColor: '#ca8a04' },  // Amber for English
-    tileDone: { opacity: 0.4 },        // Fade matched cards
-    tilePressed: { backgroundColor: colors.border },
-    tileFace: { fontSize: 32, fontWeight: '700', color: colors.borderDark },     // The "?" symbol
-    tileType: { fontSize: 10, fontWeight: '700', color: colors.textMuted, letterSpacing: 1, marginBottom: 6 },
-    tileText: { fontSize: 14, fontWeight: '600', color: colors.textSecondary, textAlign: 'center', lineHeight: 20 },
+        // Individual card tile
+        tile: {
+            minHeight: 110, // Tall enough to read comfortably
+            backgroundColor: colors.surfaceAlt,
+            borderRadius: 14,
+            borderWidth: 1.5,
+            borderColor: colors.border,
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: 12,
+        },
+        tileStoney: { backgroundColor: colors.primaryBg, borderColor: colors.primary }, // Teal for Stoney
+        tileEnglish: { backgroundColor: '#fefce8', borderColor: '#ca8a04' }, // Amber for English
+        tileDone: { opacity: 0.4 }, // Fade matched cards
+        tilePressed: { backgroundColor: colors.border },
+        tileFace: { fontSize: 32, fontWeight: '700', color: colors.borderDark }, // The "?" symbol
+        tileType: {
+            fontSize: 10,
+            fontWeight: '700',
+            color: colors.textMuted,
+            letterSpacing: 1,
+            marginBottom: 6,
+        },
+        tileText: {
+            fontSize: 14,
+            fontWeight: '600',
+            color: colors.textSecondary,
+            textAlign: 'center',
+            lineHeight: 20,
+        },
 
-    // Play again button
-    restartBtn: { alignSelf: 'center', marginTop: 20, paddingVertical: 12, paddingHorizontal: 32, backgroundColor: colors.primary, borderRadius: 12 },
-    restartPressed: { opacity: 0.9 },
-    restartText: { color: colors.surface, fontSize: 15, fontWeight: '700' },
-});
+        // Play again button
+        restartBtn: {
+            alignSelf: 'center',
+            marginTop: 20,
+            paddingVertical: 12,
+            paddingHorizontal: 32,
+            backgroundColor: colors.primary,
+            borderRadius: 12,
+        },
+        restartPressed: { opacity: 0.9 },
+        restartText: { color: colors.surface, fontSize: 15, fontWeight: '700' },
+    });

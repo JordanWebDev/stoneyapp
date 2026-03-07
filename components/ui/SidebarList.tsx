@@ -19,9 +19,9 @@ import { View, Text, StyleSheet, FlatList, Pressable, TextInput } from 'react-na
 // Type definition for a single vocabulary item
 // This same type is used across the app
 export type PhraseItem = {
-    id: string;        // Unique identifier from the database
-    stoney: string;    // The word in Stoney Nakoda language
-    english: string;   // The English translation
+    id: string; // Unique identifier from the database
+    stoney: string; // The word in Stoney Nakoda language
+    english: string; // The English translation
     audioUrl?: string; // Optional URL to an audio file for pronunciation
 };
 
@@ -45,8 +45,7 @@ export default function SidebarList({ items, activeId, onSelect }: SidebarListPr
         const q = searchQuery.toLowerCase();
         return items.filter(
             (item) =>
-                item.stoney.toLowerCase().includes(q) ||
-                item.english.toLowerCase().includes(q)
+                item.stoney.toLowerCase().includes(q) || item.english.toLowerCase().includes(q)
         );
     }, [items, searchQuery]);
 
@@ -58,20 +57,26 @@ export default function SidebarList({ items, activeId, onSelect }: SidebarListPr
             <Pressable
                 style={({ pressed }) => [
                     styles.row,
-                    isActive && styles.rowActive,         // Highlight if selected
+                    isActive && styles.rowActive, // Highlight if selected
                     pressed && !isActive && styles.rowPressed, // Dim when pressed
                 ]}
-                onPress={() => onSelect(item.id)}       // Tell parent which item was tapped
+                onPress={() => onSelect(item.id)} // Tell parent which item was tapped
             >
                 {/* Row number (1, 2, 3...) */}
                 <Text style={styles.rowIndex}>{index + 1}</Text>
 
                 {/* Word and translation */}
                 <View style={styles.rowContent}>
-                    <Text style={[styles.rowStoney, isActive && styles.rowTextActive]} numberOfLines={1}>
+                    <Text
+                        style={[styles.rowStoney, isActive && styles.rowTextActive]}
+                        numberOfLines={1}
+                    >
                         {item.stoney}
                     </Text>
-                    <Text style={[styles.rowEnglish, isActive && styles.rowEnglishActive]} numberOfLines={1}>
+                    <Text
+                        style={[styles.rowEnglish, isActive && styles.rowEnglishActive]}
+                        numberOfLines={1}
+                    >
                         {item.english}
                     </Text>
                 </View>
@@ -122,12 +127,13 @@ export default function SidebarList({ items, activeId, onSelect }: SidebarListPr
                 renderItem={renderItem}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.listContent}
-                initialNumToRender={20}         // Only render first 20 rows at start
-                maxToRenderPerBatch={20}         // Process 20 rows per batch
-                windowSize={5}                   // Keep 5 screens of content in memory
-                removeClippedSubviews={true}     // Unmount off-screen items
-                getItemLayout={(_, index) => ({  // Enable instant scroll jumps
-                    length: 57,                  // Approximate row height
+                initialNumToRender={20} // Only render first 20 rows at start
+                maxToRenderPerBatch={20} // Process 20 rows per batch
+                windowSize={5} // Keep 5 screens of content in memory
+                removeClippedSubviews={true} // Unmount off-screen items
+                getItemLayout={(_, index) => ({
+                    // Enable instant scroll jumps
+                    length: 57, // Approximate row height
                     offset: 57 * index,
                     index,
                 })}
@@ -139,117 +145,118 @@ export default function SidebarList({ items, activeId, onSelect }: SidebarListPr
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
-const createStyles = (colors: any) => StyleSheet.create({
-    sidebar: {
-        flex: 1,
-        backgroundColor: colors.surface,
-    },
-    sidebarTitle: {
-        fontSize: 13,
-        fontWeight: '700',
-        color: colors.textMuted,               // Muted gray label
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-        paddingHorizontal: 16,
-        paddingTop: 16,
-        paddingBottom: 8,
-    },
+const createStyles = (colors: any) =>
+    StyleSheet.create({
+        sidebar: {
+            flex: 1,
+            backgroundColor: colors.surface,
+        },
+        sidebarTitle: {
+            fontSize: 13,
+            fontWeight: '700',
+            color: colors.textMuted, // Muted gray label
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+            paddingHorizontal: 16,
+            paddingTop: 16,
+            paddingBottom: 8,
+        },
 
-    // Search bar container
-    searchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginHorizontal: 12,
-        marginBottom: 8,
-        backgroundColor: colors.background,     // Light gray background
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: colors.border,
-        paddingHorizontal: 10,
-        height: 40,
-    },
-    searchIcon: {
-        fontSize: 14,
-        marginRight: 6,
-    },
-    searchInput: {
-        flex: 1,
-        fontSize: 14,
-        color: colors.textDark,
-        paddingVertical: 0,            // Remove default padding on Android
-    } as any,
-    clearBtn: {
-        padding: 4,
-    },
-    clearText: {
-        fontSize: 14,
-        color: colors.textMuted,
-        fontWeight: '600',
-    },
-    resultsCount: {
-        fontSize: 12,
-        color: colors.textMuted,
-        paddingHorizontal: 16,
-        paddingBottom: 4,
-    },
+        // Search bar container
+        searchContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginHorizontal: 12,
+            marginBottom: 8,
+            backgroundColor: colors.background, // Light gray background
+            borderRadius: 10,
+            borderWidth: 1,
+            borderColor: colors.border,
+            paddingHorizontal: 10,
+            height: 40,
+        },
+        searchIcon: {
+            fontSize: 14,
+            marginRight: 6,
+        },
+        searchInput: {
+            flex: 1,
+            fontSize: 14,
+            color: colors.textDark,
+            paddingVertical: 0, // Remove default padding on Android
+        } as any,
+        clearBtn: {
+            padding: 4,
+        },
+        clearText: {
+            fontSize: 14,
+            color: colors.textMuted,
+            fontWeight: '600',
+        },
+        resultsCount: {
+            fontSize: 12,
+            color: colors.textMuted,
+            paddingHorizontal: 16,
+            paddingBottom: 4,
+        },
 
-    listContent: {
-        paddingBottom: 16,
-    },
+        listContent: {
+            paddingBottom: 16,
+        },
 
-    // Each row in the list
-    row: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 12,
-        paddingHorizontal: 16,
-        gap: 12,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.surfaceAlt,   // Very light separator line
-    },
-    rowActive: {
-        backgroundColor: colors.primaryBg,     // Light teal background when selected
-        borderLeftWidth: 3,
-        borderLeftColor: colors.primary,     // Teal left border accent
-    },
-    rowPressed: {
-        backgroundColor: colors.background,     // Subtle press feedback
-    },
+        // Each row in the list
+        row: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingVertical: 12,
+            paddingHorizontal: 16,
+            gap: 12,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.surfaceAlt, // Very light separator line
+        },
+        rowActive: {
+            backgroundColor: colors.primaryBg, // Light teal background when selected
+            borderLeftWidth: 3,
+            borderLeftColor: colors.primary, // Teal left border accent
+        },
+        rowPressed: {
+            backgroundColor: colors.background, // Subtle press feedback
+        },
 
-    // Row number (1, 2, 3...)
-    rowIndex: {
-        fontSize: 12,
-        fontWeight: '600',
-        color: colors.borderDark,
-        width: 20,
-        textAlign: 'center',
-    },
+        // Row number (1, 2, 3...)
+        rowIndex: {
+            fontSize: 12,
+            fontWeight: '600',
+            color: colors.borderDark,
+            width: 20,
+            textAlign: 'center',
+        },
 
-    // Text area inside the row
-    rowContent: {
-        flex: 1,                       // Take up remaining space
-        gap: 2,
-    },
-    rowStoney: {
-        fontSize: 15,
-        fontWeight: '600',
-        color: colors.textDark,              // Dark text for the Stoney word
-    },
-    rowTextActive: {
-        color: colors.primary,              // Teal when active
-    },
-    rowEnglish: {
-        fontSize: 13,
-        color: colors.textMuted,              // Gray for the English translation
-    },
-    rowEnglishActive: {
-        color: colors.primaryLight,              // Lighter teal when active
-    },
+        // Text area inside the row
+        rowContent: {
+            flex: 1, // Take up remaining space
+            gap: 2,
+        },
+        rowStoney: {
+            fontSize: 15,
+            fontWeight: '600',
+            color: colors.textDark, // Dark text for the Stoney word
+        },
+        rowTextActive: {
+            color: colors.primary, // Teal when active
+        },
+        rowEnglish: {
+            fontSize: 13,
+            color: colors.textMuted, // Gray for the English translation
+        },
+        rowEnglishActive: {
+            color: colors.primaryLight, // Lighter teal when active
+        },
 
-    // Arrow on the right side
-    rowArrow: {
-        fontSize: 18,
-        color: colors.borderDark,
-        fontWeight: '300',
-    },
-});
+        // Arrow on the right side
+        rowArrow: {
+            fontSize: 18,
+            color: colors.borderDark,
+            fontWeight: '300',
+        },
+    });

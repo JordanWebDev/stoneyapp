@@ -20,7 +20,7 @@ We use dynamic, multi-stop linear gradients to provide a modern, creative aesthe
 export const darkColors = {
     // ...
     // The background will diagonally blend from Black to Grey to Pink to Orange
-    backgroundGradient: ['#000000', '#27272a', '#ec4899', '#f97316'], 
+    backgroundGradient: ['#000000', '#27272a', '#ec4899', '#f97316'],
 ```
 
 To change the background, simply replace these hex codes with your own. You can add as many comma-separated colors as you want to make the gradient more complex! Once you save the file, the background will instantly update in your browser.
@@ -45,18 +45,18 @@ If you wanted to create an ocean-inspired light mode, you could edit the propert
 export const lightColors = {
     // A soothing blue-to-teal gradient background
     backgroundGradient: ['#0ea5e9', '#14b8a6'],
-    
+
     // A crisp white surface for UI cards
     surface: '#ffffff',
-    
+
     // Changing the primary accent color to Navy Blue
     primary: '#1e3a8a',
-    
+
     // Dark grey text for readability against the white surface
     text: '#1f2937',
-    
+
     // ...
-}
+};
 ```
 
 ## Need Help Choosing Colors?

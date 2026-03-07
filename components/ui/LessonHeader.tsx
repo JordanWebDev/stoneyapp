@@ -68,58 +68,59 @@ export default function LessonHeader({
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
-const createStyles = (colors: any) => StyleSheet.create({
-    container: {
-        backgroundColor: colors.primary,         // Teal — matches Loecsen's header
-        paddingVertical: 20,
-        paddingHorizontal: 24,
-        borderRadius: 12,
-        marginBottom: 12,
-    },
-    subtitle: {
-        fontSize: 11,
-        fontWeight: '700',
-        color: colors.white60,     // Semi-transparent white
-        letterSpacing: 2,
-        marginBottom: 4,
-    },
-    title: {
-        fontSize: 22,
-        fontWeight: '700',
-        color: colors.surface,
-        marginBottom: 8,
-    },
-    tip: {
-        fontSize: 14,
-        color: colors.white85,
-        lineHeight: 20,
-        marginBottom: 16,
-    },
+const createStyles = (colors: any) =>
+    StyleSheet.create({
+        container: {
+            backgroundColor: colors.primary, // Teal — matches Loecsen's header
+            paddingVertical: 20,
+            paddingHorizontal: 24,
+            borderRadius: 12,
+            marginBottom: 12,
+        },
+        subtitle: {
+            fontSize: 11,
+            fontWeight: '700',
+            color: colors.white60, // Semi-transparent white
+            letterSpacing: 2,
+            marginBottom: 4,
+        },
+        title: {
+            fontSize: 22,
+            fontWeight: '700',
+            color: colors.surface,
+            marginBottom: 8,
+        },
+        tip: {
+            fontSize: 14,
+            color: colors.white85,
+            lineHeight: 20,
+            marginBottom: 16,
+        },
 
-    // Segmented progress bar
-    progressRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 10,
-    },
-    progressTrack: {
-        flex: 1,
-        flexDirection: 'row',
-        gap: 3,
-        height: 8,
-    },
-    segment: {
-        flex: 1,
-        backgroundColor: colors.white20, // Empty segment
-        borderRadius: 4,
-    },
-    segmentFilled: {
-        backgroundColor: colors.primaryLight,                // Filled segment — light teal
-    },
-    progressLabel: {
-        color: colors.white70,
-        fontSize: 12,
-        fontWeight: '600',
-        minWidth: 36,
-    },
-});
+        // Segmented progress bar
+        progressRow: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 10,
+        },
+        progressTrack: {
+            flex: 1,
+            flexDirection: 'row',
+            gap: 3,
+            height: 8,
+        },
+        segment: {
+            flex: 1,
+            backgroundColor: colors.white20, // Empty segment
+            borderRadius: 4,
+        },
+        segmentFilled: {
+            backgroundColor: colors.primaryLight, // Filled segment — light teal
+        },
+        progressLabel: {
+            color: colors.white70,
+            fontSize: 12,
+            fontWeight: '600',
+            minWidth: 36,
+        },
+    });

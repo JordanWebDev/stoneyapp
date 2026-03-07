@@ -93,71 +93,71 @@ export default function HomeScreen() {
     // State Variables
     // --------------------------------------------------
 
-    /** 
-     * @state items 
-     * @description The complete list of vocabulary phrases fetched from the Supabase database. 
+    /**
+     * @state items
+     * @description The complete list of vocabulary phrases fetched from the Supabase database.
      */
     const [items, setItems] = useState<PhraseItem[]>([]);
 
-    /** 
-     * @state activeItem 
+    /**
+     * @state activeItem
      * @description The specific phrase currently selected by the user, displayed in the main Learning Card.
      */
     const [activeItem, setActiveItem] = useState<PhraseItem | null>(null);
 
-    /** 
-     * @state loading 
+    /**
+     * @state loading
      * @description Tracks whether the initial database fetch is still in progress. Controls the loading spinner.
      */
     const [loading, setLoading] = useState(true);
 
-    /** 
-     * @state sound 
+    /**
+     * @state sound
      * @description Holds the current Expo AV audio object so we can stop or unload it when a new sound plays.
      */
     const [sound, setSound] = useState<Audio.Sound | null>(null);
 
-    /** 
-     * @state activeTab 
+    /**
+     * @state activeTab
      * @description Determines which main view is rendered (Learn, Quiz, Flashcards, Match, Wordle, Crossword).
      */
     const [activeTab, setActiveTab] = useState<TabKey>('learn');
 
     // Category filtering state
-    /** 
-     * @state categories 
+    /**
+     * @state categories
      * @description All available lesson categories (e.g., 'Animals', 'Colors') fetched from the database.
      */
     const [categories, setCategories] = useState<Category[]>([]);
 
-    /** 
-     * @state selectedCategory 
+    /**
+     * @state selectedCategory
      * @description The ID of the currently selected category filter. If null, displays 'All Vocabulary'.
      */
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
     // Auto-play feature state
-    /** 
-     * @state isAutoPlaying 
+    /**
+     * @state isAutoPlaying
      * @description Boolean flag indicating if the app is currently auto-advancing through the vocabulary list.
      */
     const [isAutoPlaying, setIsAutoPlaying] = useState(false);
 
-    /** 
-     * @state autoPlaySpeed 
+    /**
+     * @state autoPlaySpeed
      * @description Controls the delay between auto-play advances. 'normal' = 3s, 'slow' = 5s.
      */
     const [autoPlaySpeed, setAutoPlaySpeed] = useState<'normal' | 'slow'>('normal');
 
-    /** 
-     * @ref autoPlayTimer 
+    /**
+     * @ref autoPlayTimer
      * @description React ref to store the Javascript timeout ID, allowing us to clear it if auto-play is paused.
      */
     const autoPlayTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // Progress tracking — tracks user's studied words
-    /** 
-     * @state studiedIds 
+    /**
+     * @state studiedIds
      * @description A Set of phrase IDs the user has listened to. Used to calculate the lesson progress bar.
      */
     const [studiedIds, setStudiedIds] = useState<Set<string>>(new Set());
@@ -173,13 +173,13 @@ export default function HomeScreen() {
     // --------------------------------------------------
     /**
      * @hook useEffect (on mount)
-     * @description Runs exactly once when the app opens. It fetches categories and vocabulary, 
+     * @description Runs exactly once when the app opens. It fetches categories and vocabulary,
      * and loads any previously saved progress from the device.
      */
     useEffect(() => {
         fetchCategories();
         fetchVocabulary();
-        loadProgress();  // Load saved progress from device storage
+        loadProgress(); // Load saved progress from device storage
     }, []);
 
     // Re-fetch vocabulary when category changes
@@ -188,7 +188,11 @@ export default function HomeScreen() {
     }, [selectedCategory]);
 
     useEffect(() => {
-        return sound ? () => { sound.unloadAsync(); } : undefined;
+        return sound
+            ? () => {
+                  sound.unloadAsync();
+              }
+            : undefined;
     }, [sound]);
 
     // Clean up auto-play timer on unmount
@@ -214,7 +218,9 @@ export default function HomeScreen() {
         try {
             const saved = await AsyncStorage.getItem('studiedIds');
             if (saved) setStudiedIds(new Set(JSON.parse(saved)));
-        } catch { /* ignore load errors */ }
+        } catch {
+            /* ignore load errors */
+        }
     };
 
     /**
@@ -279,25 +285,30 @@ export default function HomeScreen() {
     // --------------------------------------------------
     // Audio Playback
     // --------------------------------------------------
-    const handlePlay = useCallback(async (item?: PhraseItem) => {
-        const target = item || activeItem;
-        if (!target?.audioUrl) return;
+    const handlePlay = useCallback(
+        async (item?: PhraseItem) => {
+            const target = item || activeItem;
+            if (!target?.audioUrl) return;
 
-        // Track this word as "studied"
-        setStudiedIds((prev) => new Set(prev).add(target.id));
+            // Track this word as "studied"
+            setStudiedIds((prev) => new Set(prev).add(target.id));
 
-        try {
-            if (sound) await sound.unloadAsync();
-            const { sound: s } = await Audio.Sound.createAsync({ uri: target.audioUrl });
-            setSound(s);
-            await s.playAsync();
-        } catch (err) {
-            console.error('Error playing audio:', err);
-        }
-    }, [activeItem, sound]);
+            try {
+                if (sound) await sound.unloadAsync();
+                const { sound: s } = await Audio.Sound.createAsync({ uri: target.audioUrl });
+                setSound(s);
+                await s.playAsync();
+            } catch (err) {
+                console.error('Error playing audio:', err);
+            }
+        },
+        [activeItem, sound]
+    );
 
     // Keep the ref in sync with the latest handlePlay
-    useEffect(() => { handlePlayRef.current = handlePlay; }, [handlePlay]);
+    useEffect(() => {
+        handlePlayRef.current = handlePlay;
+    }, [handlePlay]);
 
     // --------------------------------------------------
     // Auto-Play Logic
@@ -362,9 +373,7 @@ export default function HomeScreen() {
     // --------------------------------------------------
     // Active item index for auto-play bar
     // --------------------------------------------------
-    const currentIndex = activeItem
-        ? items.findIndex((i) => i.id === activeItem.id)
-        : 0;
+    const currentIndex = activeItem ? items.findIndex((i) => i.id === activeItem.id) : 0;
 
     // --------------------------------------------------
     // Main Render
@@ -400,7 +409,6 @@ export default function HomeScreen() {
 
             {/* Content area with fade transition */}
             <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
-
                 {/* ── LEARN TAB ── */}
                 {activeTab === 'learn' && (
                     <View style={styles.learnOuter}>
@@ -413,18 +421,44 @@ export default function HomeScreen() {
                                 contentContainerStyle={styles.categoryRow}
                             >
                                 <Pressable
-                                    style={[styles.categoryPill, !selectedCategory && styles.categoryPillActive]}
-                                    onPress={() => { setSelectedCategory(null); playClickSound(); }}
+                                    style={[
+                                        styles.categoryPill,
+                                        !selectedCategory && styles.categoryPillActive,
+                                    ]}
+                                    onPress={() => {
+                                        setSelectedCategory(null);
+                                        playClickSound();
+                                    }}
                                 >
-                                    <Text style={[styles.categoryText, !selectedCategory && styles.categoryTextActive]}>All</Text>
+                                    <Text
+                                        style={[
+                                            styles.categoryText,
+                                            !selectedCategory && styles.categoryTextActive,
+                                        ]}
+                                    >
+                                        All
+                                    </Text>
                                 </Pressable>
                                 {categories.map((cat) => (
                                     <Pressable
                                         key={cat.id}
-                                        style={[styles.categoryPill, selectedCategory === cat.id && styles.categoryPillActive]}
-                                        onPress={() => { setSelectedCategory(cat.id); playClickSound(); }}
+                                        style={[
+                                            styles.categoryPill,
+                                            selectedCategory === cat.id &&
+                                                styles.categoryPillActive,
+                                        ]}
+                                        onPress={() => {
+                                            setSelectedCategory(cat.id);
+                                            playClickSound();
+                                        }}
                                     >
-                                        <Text style={[styles.categoryText, selectedCategory === cat.id && styles.categoryTextActive]}>
+                                        <Text
+                                            style={[
+                                                styles.categoryText,
+                                                selectedCategory === cat.id &&
+                                                    styles.categoryTextActive,
+                                            ]}
+                                        >
                                             {cat.name}
                                         </Text>
                                     </Pressable>
@@ -434,9 +468,11 @@ export default function HomeScreen() {
 
                         {/* Loecsen-style lesson header with segmented progress */}
                         <LessonHeader
-                            lessonTitle={selectedCategory
-                                ? categories.find(c => c.id === selectedCategory)?.name || 'Vocabulary'
-                                : 'All Vocabulary'
+                            lessonTitle={
+                                selectedCategory
+                                    ? categories.find((c) => c.id === selectedCategory)?.name ||
+                                      'Vocabulary'
+                                    : 'All Vocabulary'
                             }
                             tip="Listen to the words one by one. When you feel ready, switch to Quiz mode to practise."
                             current={studiedIds.size}
@@ -444,11 +480,36 @@ export default function HomeScreen() {
                         />
 
                         {/* Main content — sidebar + card */}
-                        <View style={[styles.learnContainer, isDesktop ? styles.learnDesktop : styles.learnMobile]}>
-                            <View style={[styles.sidebarWrap, isDesktop ? { flex: 1.2 } : { flex: 1 }]}>
-                                <SidebarList items={items} activeId={activeItem?.id} onSelect={handleSelect} />
+                        <View
+                            style={[
+                                styles.learnContainer,
+                                isDesktop ? styles.learnDesktop : styles.learnMobile,
+                            ]}
+                        >
+                            <View
+                                style={[
+                                    styles.sidebarWrap,
+                                    isDesktop ? { flex: 1.2 } : { flex: 1 },
+                                ]}
+                            >
+                                <SidebarList
+                                    items={items}
+                                    activeId={activeItem?.id}
+                                    onSelect={handleSelect}
+                                />
                             </View>
-                            <View style={[styles.mainWrap, isDesktop ? { flex: 2.8 } : { minHeight: 280, borderTopWidth: 1, borderTopColor: colors.border }]}>
+                            <View
+                                style={[
+                                    styles.mainWrap,
+                                    isDesktop
+                                        ? { flex: 2.8 }
+                                        : {
+                                              minHeight: 280,
+                                              borderTopWidth: 1,
+                                              borderTopColor: colors.border,
+                                          },
+                                ]}
+                            >
                                 {activeItem && (
                                     <LearningCard
                                         nativeWord={activeItem.stoney}
@@ -475,27 +536,37 @@ export default function HomeScreen() {
 
                 {/* ── QUIZ TAB ── */}
                 {activeTab === 'quiz' && (
-                    <View style={styles.gameWrap}><QuizMode items={items} /></View>
+                    <View style={styles.gameWrap}>
+                        <QuizMode items={items} />
+                    </View>
                 )}
 
                 {/* ── FLASHCARDS TAB ── */}
                 {activeTab === 'flashcards' && (
-                    <View style={styles.gameWrap}><FlashcardMode items={items} /></View>
+                    <View style={styles.gameWrap}>
+                        <FlashcardMode items={items} />
+                    </View>
                 )}
 
                 {/* ── MATCH TAB ── */}
                 {activeTab === 'match' && (
-                    <View style={styles.gameWrap}><MatchingGame items={items} /></View>
+                    <View style={styles.gameWrap}>
+                        <MatchingGame items={items} />
+                    </View>
                 )}
 
                 {/* ── WORDLE TAB ── */}
                 {activeTab === 'wordle' && (
-                    <View style={styles.gameWrap}><WordleGame items={items} categories={categories} /></View>
+                    <View style={styles.gameWrap}>
+                        <WordleGame items={items} categories={categories} />
+                    </View>
                 )}
 
                 {/* ── CROSSWORD TAB ── */}
                 {activeTab === 'crossword' && (
-                    <View style={styles.gameWrap}><CrosswordGame items={items} /></View>
+                    <View style={styles.gameWrap}>
+                        <CrosswordGame items={items} />
+                    </View>
                 )}
             </Animated.View>
 
@@ -532,188 +603,189 @@ export default function HomeScreen() {
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
-const createStyles = (colors: any) => StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'transparent',
-    },
-    centered: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    loadingText: {
-        marginTop: 12,
-        color: colors.textMuted,
-        fontSize: 15,
-    },
+const createStyles = (colors: any) =>
+    StyleSheet.create({
+        container: {
+            flex: 1,
+            backgroundColor: 'transparent',
+        },
+        centered: {
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        loadingText: {
+            marginTop: 12,
+            color: colors.textMuted,
+            fontSize: 15,
+        },
 
-    // Tab bar — with icons
-    tabBarWrapper: {
-        backgroundColor: colors.surface,
-        borderBottomWidth: 1,
-        borderBottomColor: colors.border,
-    },
-    tabBar: {
-        flexDirection: 'row',
-        paddingHorizontal: 16,
-        paddingBottom: Platform.OS === 'web' ? 8 : 0, // Prevent scrollbar overlap on web
-    },
-    tab: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: 6,
-        paddingVertical: 14,
-        paddingHorizontal: 16,
-        borderBottomWidth: 2,
-        borderBottomColor: 'transparent',
-    },
-    tabActive: {
-        borderBottomColor: colors.primary,
-    },
-    tabIcon: {
-        fontSize: 16,
-    },
-    tabText: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: colors.textMuted,
-    },
-    tabTextActive: {
-        color: colors.primary,
-    },
+        // Tab bar — with icons
+        tabBarWrapper: {
+            backgroundColor: colors.surface,
+            borderBottomWidth: 1,
+            borderBottomColor: colors.border,
+        },
+        tabBar: {
+            flexDirection: 'row',
+            paddingHorizontal: 16,
+            paddingBottom: Platform.OS === 'web' ? 8 : 0, // Prevent scrollbar overlap on web
+        },
+        tab: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 6,
+            paddingVertical: 14,
+            paddingHorizontal: 16,
+            borderBottomWidth: 2,
+            borderBottomColor: 'transparent',
+        },
+        tabActive: {
+            borderBottomColor: colors.primary,
+        },
+        tabIcon: {
+            fontSize: 16,
+        },
+        tabText: {
+            fontSize: 14,
+            fontWeight: '600',
+            color: colors.textMuted,
+        },
+        tabTextActive: {
+            color: colors.primary,
+        },
 
-    // Content area
-    content: {
-        flex: 1,
-        padding: 12,
-        maxWidth: 1200,
-        width: '100%',
-        alignSelf: 'center',
-    },
+        // Content area
+        content: {
+            flex: 1,
+            padding: 12,
+            maxWidth: 1200,
+            width: '100%',
+            alignSelf: 'center',
+        },
 
-    // Learn tab outer container
-    learnOuter: {
-        flex: 1,
-        gap: 0,
-    },
+        // Learn tab outer container
+        learnOuter: {
+            flex: 1,
+            gap: 0,
+        },
 
-    // Learn mode — sidebar + card
-    learnContainer: {
-        flex: 1,
-        backgroundColor: colors.surface,
-        borderRadius: 12,
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: colors.border,
-    },
-    learnDesktop: {
-        flexDirection: 'row',
-    },
-    learnMobile: {
-        flexDirection: 'column',
-    },
-    sidebarWrap: {
-        borderRightWidth: 1,
-        borderRightColor: colors.border,
-    },
-    mainWrap: {
-        backgroundColor: colors.surface,
-    },
+        // Learn mode — sidebar + card
+        learnContainer: {
+            flex: 1,
+            backgroundColor: colors.surface,
+            borderRadius: 12,
+            overflow: 'hidden',
+            borderWidth: 1,
+            borderColor: colors.border,
+        },
+        learnDesktop: {
+            flexDirection: 'row',
+        },
+        learnMobile: {
+            flexDirection: 'column',
+        },
+        sidebarWrap: {
+            borderRightWidth: 1,
+            borderRightColor: colors.border,
+        },
+        mainWrap: {
+            backgroundColor: colors.surface,
+        },
 
-    // Auto-play bar wrapper
-    autoPlayWrap: {
-        marginTop: 12,
-    },
+        // Auto-play bar wrapper
+        autoPlayWrap: {
+            marginTop: 12,
+        },
 
-    // Game modes container
-    gameWrap: {
-        flex: 1,
-        backgroundColor: colors.surface,
-        borderRadius: 12,
-        overflow: 'hidden',
-        borderWidth: 1,
-        borderColor: colors.border,
-    },
+        // Game modes container
+        gameWrap: {
+            flex: 1,
+            backgroundColor: colors.surface,
+            borderRadius: 12,
+            overflow: 'hidden',
+            borderWidth: 1,
+            borderColor: colors.border,
+        },
 
-    // Category pills
-    categoryScroll: {
-        maxHeight: Platform.OS === 'web' ? 56 : 44, // Extra height for web scrollbar
-        marginBottom: 10,
-    },
-    categoryRow: {
-        flexDirection: 'row',
-        gap: 8,
-        paddingHorizontal: 4,
-        paddingRight: 16,
-        paddingBottom: Platform.OS === 'web' ? 8 : 0,
-    },
-    categoryPill: {
-        paddingVertical: 8,
-        paddingHorizontal: 16,
-        borderRadius: 20,
-        backgroundColor: colors.surfaceAlt,
-        borderWidth: 1,
-        borderColor: colors.border,
-    },
-    categoryPillActive: {
-        backgroundColor: colors.primary,
-        borderColor: colors.primary,
-    },
-    categoryText: {
-        fontSize: 13,
-        fontWeight: '600',
-        color: colors.textMutedDark,
-    },
-    categoryTextActive: {
-        color: colors.surface,
-    },
+        // Category pills
+        categoryScroll: {
+            maxHeight: Platform.OS === 'web' ? 56 : 44, // Extra height for web scrollbar
+            marginBottom: 10,
+        },
+        categoryRow: {
+            flexDirection: 'row',
+            gap: 8,
+            paddingHorizontal: 4,
+            paddingRight: 16,
+            paddingBottom: Platform.OS === 'web' ? 8 : 0,
+        },
+        categoryPill: {
+            paddingVertical: 8,
+            paddingHorizontal: 16,
+            borderRadius: 20,
+            backgroundColor: colors.surfaceAlt,
+            borderWidth: 1,
+            borderColor: colors.border,
+        },
+        categoryPillActive: {
+            backgroundColor: colors.primary,
+            borderColor: colors.primary,
+        },
+        categoryText: {
+            fontSize: 13,
+            fontWeight: '600',
+            color: colors.textMutedDark,
+        },
+        categoryTextActive: {
+            color: colors.surface,
+        },
 
-    // Logout modal overlay
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: colors.overlay,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    modalCard: {
-        backgroundColor: colors.surface,
-        borderRadius: 16,
-        padding: 32,
-        width: '90%',
-        maxWidth: 360,
-        alignItems: 'center',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.15,
-        shadowRadius: 24,
-        elevation: 10,
-    },
-    modalIcon: {
-        fontSize: 48,
-        marginBottom: 12,
-    },
-    modalTitle: {
-        fontSize: 22,
-        fontWeight: '700',
-        color: colors.text,
-        marginBottom: 8,
-    },
-    modalMessage: {
-        fontSize: 14,
-        color: colors.textMutedDark,
-        textAlign: 'center',
-        marginBottom: 24,
-        lineHeight: 20,
-    },
-    modalButton: {
-        backgroundColor: colors.primary,
-        paddingVertical: 12,
-        paddingHorizontal: 48,
-        borderRadius: 10,
-    },
-    modalButtonText: {
-        color: colors.surface,
-        fontSize: 16,
-        fontWeight: '700',
-    },
-});
+        // Logout modal overlay
+        modalOverlay: {
+            flex: 1,
+            backgroundColor: colors.overlay,
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        modalCard: {
+            backgroundColor: colors.surface,
+            borderRadius: 16,
+            padding: 32,
+            width: '90%',
+            maxWidth: 360,
+            alignItems: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.15,
+            shadowRadius: 24,
+            elevation: 10,
+        },
+        modalIcon: {
+            fontSize: 48,
+            marginBottom: 12,
+        },
+        modalTitle: {
+            fontSize: 22,
+            fontWeight: '700',
+            color: colors.text,
+            marginBottom: 8,
+        },
+        modalMessage: {
+            fontSize: 14,
+            color: colors.textMutedDark,
+            textAlign: 'center',
+            marginBottom: 24,
+            lineHeight: 20,
+        },
+        modalButton: {
+            backgroundColor: colors.primary,
+            paddingVertical: 12,
+            paddingHorizontal: 48,
+            borderRadius: 10,
+        },
+        modalButtonText: {
+            color: colors.surface,
+            fontSize: 16,
+            fontWeight: '700',
+        },
+    });

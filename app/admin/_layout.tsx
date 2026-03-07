@@ -45,7 +45,9 @@ export default function AdminLayout() {
     }, []);
 
     const checkSession = async () => {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+            data: { session },
+        } = await supabase.auth.getSession();
         setIsAuthenticated(!!session);
         setCheckingSession(false);
     };
@@ -216,10 +218,14 @@ export default function AdminLayout() {
                 <View style={styles.passwordPanel}>
                     <Text style={styles.passwordTitle}>Change Password</Text>
                     {passwordMessage ? (
-                        <Text style={[
-                            styles.passwordMsg,
-                            passwordMessage.startsWith('✅') ? styles.successMsg : styles.errorMsg,
-                        ]}>
+                        <Text
+                            style={[
+                                styles.passwordMsg,
+                                passwordMessage.startsWith('✅')
+                                    ? styles.successMsg
+                                    : styles.errorMsg,
+                            ]}
+                        >
                             {passwordMessage}
                         </Text>
                     ) : null}
@@ -248,7 +254,10 @@ export default function AdminLayout() {
                             />
                         </View>
                         <Pressable
-                            style={({ pressed }) => [styles.savePasswordBtn, pressed && styles.btnPressed]}
+                            style={({ pressed }) => [
+                                styles.savePasswordBtn,
+                                pressed && styles.btnPressed,
+                            ]}
                             onPress={handleChangePassword}
                         >
                             <Text style={styles.savePasswordText}>Update</Text>
@@ -269,68 +278,110 @@ export default function AdminLayout() {
  * ────────────────────────────────────────────── */
 const styles = StyleSheet.create({
     loginContainer: {
-        flex: 1, backgroundColor: '#fafaf9',
-        justifyContent: 'center', alignItems: 'center', padding: 24,
+        flex: 1,
+        backgroundColor: '#fafaf9',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 24,
     },
     loginCard: {
-        width: '100%', maxWidth: 400, backgroundColor: '#fff',
-        borderRadius: 16, padding: 32,
-        borderWidth: 1, borderColor: '#e7e5e4',
+        width: '100%',
+        maxWidth: 400,
+        backgroundColor: '#fff',
+        borderRadius: 16,
+        padding: 32,
+        borderWidth: 1,
+        borderColor: '#e7e5e4',
     },
     lockIcon: { fontSize: 40, textAlign: 'center', marginBottom: 8 },
-    loginTitle: { fontSize: 24, fontWeight: '700', color: '#1c1917', textAlign: 'center', marginBottom: 4 },
+    loginTitle: {
+        fontSize: 24,
+        fontWeight: '700',
+        color: '#1c1917',
+        textAlign: 'center',
+        marginBottom: 4,
+    },
     loginSubtitle: { fontSize: 14, color: '#a8a29e', textAlign: 'center', marginBottom: 24 },
     label: { fontSize: 13, fontWeight: '600', color: '#57534e', marginBottom: 6, marginTop: 12 },
     input: {
-        borderWidth: 1, borderColor: '#e7e5e4', borderRadius: 10,
-        padding: 12, fontSize: 15, backgroundColor: '#fafaf9', color: '#1c1917',
+        borderWidth: 1,
+        borderColor: '#e7e5e4',
+        borderRadius: 10,
+        padding: 12,
+        fontSize: 15,
+        backgroundColor: '#fafaf9',
+        color: '#1c1917',
     },
     loginBtn: {
-        marginTop: 24, backgroundColor: '#ea580c',
-        paddingVertical: 14, borderRadius: 10, alignItems: 'center',
+        marginTop: 24,
+        backgroundColor: '#ea580c',
+        paddingVertical: 14,
+        borderRadius: 10,
+        alignItems: 'center',
     },
     loginBtnText: { color: '#fff', fontSize: 16, fontWeight: '700' },
     btnPressed: { opacity: 0.8 },
     errorBox: {
-        backgroundColor: '#fef2f2', borderWidth: 1, borderColor: '#fecaca',
-        borderRadius: 8, padding: 10, marginBottom: 8,
+        backgroundColor: '#fef2f2',
+        borderWidth: 1,
+        borderColor: '#fecaca',
+        borderRadius: 8,
+        padding: 10,
+        marginBottom: 8,
     },
     errorText: { color: '#dc2626', fontSize: 13, fontWeight: '500', textAlign: 'center' },
 
     // Top bar
     topBar: {
-        flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-        backgroundColor: '#1f2937', paddingVertical: 14, paddingHorizontal: 24,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        backgroundColor: '#1f2937',
+        paddingVertical: 14,
+        paddingHorizontal: 24,
     },
     topBarTitle: { fontSize: 16, fontWeight: '700', color: '#fff' },
     topBarRight: { flexDirection: 'row', gap: 8 },
     settingsBtn: {
         backgroundColor: 'rgba(255,255,255,0.15)',
-        paddingVertical: 8, paddingHorizontal: 14, borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 14,
+        borderRadius: 8,
     },
     settingsText: { color: '#fff', fontSize: 13, fontWeight: '600' },
     logoutBtn: {
         backgroundColor: 'rgba(255,255,255,0.1)',
-        paddingVertical: 8, paddingHorizontal: 16, borderRadius: 8,
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+        borderRadius: 8,
     },
     logoutText: { color: '#fff', fontSize: 13, fontWeight: '600' },
 
     // Password panel
     passwordPanel: {
-        backgroundColor: '#fff', padding: 20,
-        borderBottomWidth: 1, borderBottomColor: '#e7e5e4',
+        backgroundColor: '#fff',
+        padding: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e7e5e4',
     },
     passwordTitle: { fontSize: 16, fontWeight: '700', color: '#1f2937', marginBottom: 12 },
     passwordRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 12, flexWrap: 'wrap' },
     passwordField: { minWidth: 200, flex: 1 },
     passwordLabel: { fontSize: 12, fontWeight: '600', color: '#57534e', marginBottom: 4 },
     passwordInput: {
-        borderWidth: 1, borderColor: '#e7e5e4', borderRadius: 8,
-        padding: 10, fontSize: 14, backgroundColor: '#fafaf9',
+        borderWidth: 1,
+        borderColor: '#e7e5e4',
+        borderRadius: 8,
+        padding: 10,
+        fontSize: 14,
+        backgroundColor: '#fafaf9',
     },
     savePasswordBtn: {
-        backgroundColor: '#ea580c', paddingVertical: 11,
-        paddingHorizontal: 20, borderRadius: 8, alignSelf: 'flex-end',
+        backgroundColor: '#ea580c',
+        paddingVertical: 11,
+        paddingHorizontal: 20,
+        borderRadius: 8,
+        alignSelf: 'flex-end',
     },
     savePasswordText: { color: '#fff', fontSize: 14, fontWeight: '700' },
     passwordMsg: { fontSize: 13, fontWeight: '500', marginBottom: 8 },

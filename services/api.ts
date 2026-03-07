@@ -45,7 +45,7 @@ export async function getCategories(): Promise<Category[]> {
  * Fetches ALL vocabulary from Supabase using pagination.
  * Supabase returns a max of 1000 rows per request, so this loops
  * in batches of 1000 until all records are loaded (~9,904 total records).
- * 
+ *
  * @param categoryId Optional category ID to filter the vocabulary by.
  */
 export async function getVocabulary(categoryId: string | null = null): Promise<PhraseItem[]> {
@@ -115,7 +115,7 @@ export async function getFeedback(): Promise<FeedbackItem[]> {
 
 /**
  * Uploads a new vocabulary item to the database, optionally uploading an audio file to storage.
- * 
+ *
  * @param nativeWord The Stoney phrase
  * @param translation The English translation
  * @param categoryId Optional category ID
@@ -136,11 +136,9 @@ export async function addVocabulary(
         const blob = await res.blob();
         const fileName = `admin_${Date.now()}_${asset.name}`;
 
-        const { error: uploadError } = await supabase.storage
-            .from('audio')
-            .upload(fileName, blob, {
-                contentType: asset.mimeType || 'audio/wav',
-            });
+        const { error: uploadError } = await supabase.storage.from('audio').upload(fileName, blob, {
+            contentType: asset.mimeType || 'audio/wav',
+        });
 
         if (uploadError) throw uploadError;
 
@@ -149,14 +147,14 @@ export async function addVocabulary(
     }
 
     // 2. Insert record into database
-    const { error: insertError } = await supabase
-        .from('vocabulary')
-        .insert([{
+    const { error: insertError } = await supabase.from('vocabulary').insert([
+        {
             native_word: nativeWord,
             translation,
             category_id: categoryId,
             audio_url: audioUrl,
-        }]);
+        },
+    ]);
 
     if (insertError) throw insertError;
 }
