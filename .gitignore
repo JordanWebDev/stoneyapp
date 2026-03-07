@@ -1,0 +1,4 @@
+# Protect secrets
+.env
+.env.*
+node_modules/
