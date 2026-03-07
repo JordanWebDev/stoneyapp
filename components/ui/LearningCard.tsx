@@ -22,6 +22,13 @@ interface LearningCardProps {
     onPlayPress?: () => void;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.nativeWord
+ * @param root0.translation
+ * @param root0.onPlayPress
+ */
 export default function LearningCard({ nativeWord, translation, onPlayPress }: LearningCardProps) {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -54,6 +61,10 @@ export default function LearningCard({ nativeWord, translation, onPlayPress }: L
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: {

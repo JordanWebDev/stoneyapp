@@ -22,6 +22,11 @@ interface FlashcardModeProps {
     items: VocabItem[];
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.items
+ */
 export default function FlashcardMode({ items }: FlashcardModeProps) {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -45,6 +50,9 @@ export default function FlashcardMode({ items }: FlashcardModeProps) {
     }
 
     // Move to the next card and hide the translation
+    /**
+     *
+     */
     const next = () => {
         playClickSound();
         setRevealed(false);
@@ -52,6 +60,9 @@ export default function FlashcardMode({ items }: FlashcardModeProps) {
     };
 
     // Mark current word as mastered and move on
+    /**
+     *
+     */
     const markMastered = () => {
         const newMastered = new Set(mastered).add(word.id);
         setMastered(newMastered);
@@ -134,6 +145,10 @@ export default function FlashcardMode({ items }: FlashcardModeProps) {
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: { flex: 1, backgroundColor: colors.surface, padding: 24 },

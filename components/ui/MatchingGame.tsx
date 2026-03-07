@@ -34,6 +34,11 @@ type Card = {
     vocabId: string; // Links Stoney and English cards for the same word
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.items
+ */
 export default function MatchingGame({ items }: MatchingGameProps) {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -211,6 +216,10 @@ export default function MatchingGame({ items }: MatchingGameProps) {
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: { flex: 1, backgroundColor: colors.surface, padding: 24 },

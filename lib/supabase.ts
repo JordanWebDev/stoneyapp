@@ -9,6 +9,9 @@ if (!supabaseUrl || !supabaseAnonKey) {
     console.warn('Supabase URL and Anon Key should be set in environment variables');
 }
 
+/**
+ *
+ */
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     auth: {
         storage: AsyncStorage,

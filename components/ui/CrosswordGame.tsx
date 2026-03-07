@@ -21,6 +21,10 @@ import {
 } from 'react-native';
 import { playClickSound, playCompleteSound } from './SoundEffects';
 
+/**
+ *
+ * @param str
+ */
 export const normalizeStoney = (str: string) => {
     return str
         .toLowerCase()
@@ -67,6 +71,10 @@ type GridCell = {
 };
 
 // Helper to create positive hints dynamically
+/**
+ *
+ * @param english
+ */
 const createPositiveHint = (english: string) => {
     const templates = [
         'To find your path, think about [word].',
@@ -88,6 +96,11 @@ const createPositiveHint = (english: string) => {
     return template.replace('[word]', `"${cleanEnglish}"`);
 };
 
+/**
+ *
+ * @param root0
+ * @param root0.items
+ */
 export default function CrosswordGame({ items }: WordleGameProps) {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -148,9 +161,9 @@ export default function CrosswordGame({ items }: WordleGameProps) {
                 for (let i = 0; i < w1Clean.length; i++) board.set(`0,${i}`, w1Clean[i]);
 
                 let nextNumber = 2;
-                let targetWordCount = Math.floor(Math.random() * 2) + 4; // 4 to 5 words
+                const targetWordCount = Math.floor(Math.random() * 2) + 4; // 4 to 5 words
 
-                for (let w of wordsList) {
+                for (const w of wordsList) {
                     if (placed.length >= targetWordCount) break;
 
                     const cleanWord = normalizeStoney(w.stoney);
@@ -180,8 +193,8 @@ export default function CrosswordGame({ items }: WordleGameProps) {
 
                             // Calculate the starting coordinates for the new word so that
                             // its shared letter lands exactly on the intersection point
-                            let startR = tryHorizontal ? r : r - splitIdx;
-                            let startC = tryHorizontal ? c - splitIdx : c;
+                            const startR = tryHorizontal ? r : r - splitIdx;
+                            const startC = tryHorizontal ? c - splitIdx : c;
 
                             // Step 2: Ensure the placement is valid
                             let isValid = true;
@@ -255,7 +268,7 @@ export default function CrosswordGame({ items }: WordleGameProps) {
 
                 if (placed.length >= 3) {
                     success = true;
-                    let newGridMap = new Map<string, GridCell>();
+                    const newGridMap = new Map<string, GridCell>();
                     let minR = 0,
                         maxR = 0,
                         minC = 0,
@@ -362,7 +375,7 @@ export default function CrosswordGame({ items }: WordleGameProps) {
                     newMap.set(coord, { ...cell, userLetter: key.toLowerCase() });
 
                     // Check if word is complete and correct
-                    let updatedMap = newMap;
+                    const updatedMap = newMap;
                     let wonGame = false;
 
                     // Simple auto-check completion logic deferred to a useEffect,
@@ -370,7 +383,7 @@ export default function CrosswordGame({ items }: WordleGameProps) {
                     let anyChanges = false;
                     placedWords.forEach((word) => {
                         let wordCorrect = true;
-                        let cellsToLock: string[] = [];
+                        const cellsToLock: string[] = [];
                         for (let i = 0; i < word.stoneyClean.length; i++) {
                             const r = word.isHorizontal ? word.row : word.row + i;
                             const c = word.isHorizontal ? word.col + i : word.col;
@@ -440,6 +453,11 @@ export default function CrosswordGame({ items }: WordleGameProps) {
     );
 
     // Cell Click
+    /**
+     *
+     * @param r
+     * @param c
+     */
     const handleCellClick = (r: number, c: number) => {
         const cell = gridMap.get(`${r},${c}`);
         if (!cell) return;
@@ -707,6 +725,10 @@ export default function CrosswordGame({ items }: WordleGameProps) {
     );
 }
 
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         center: { flex: 1, alignItems: 'center', justifyContent: 'center' },

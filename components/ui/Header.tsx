@@ -15,6 +15,9 @@ import { useTheme } from '../../contexts/ThemeContext';
 import { View, Text, StyleSheet, Pressable, useWindowDimensions } from 'react-native';
 import { Link } from 'expo-router';
 
+/**
+ *
+ */
 export default function Header() {
     const { colors, isDarkMode, toggleTheme } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -84,6 +87,10 @@ export default function Header() {
  * All visual styling is defined here.
  * Change colors, sizes, and spacing below.
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         // The header bar container

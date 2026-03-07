@@ -26,6 +26,7 @@ import { playClickSound, playCompleteSound } from './SoundEffects';
  * Normalizes Stoney Nakoda text for game comparison.
  * Converts to lowercase, decomposes diacritics (NFD), and strips combining marks.
  * e.g., "achâksîch" -> "achaksich"
+ * @param str
  */
 export const normalizeStoney = (str: string) => {
     return str
@@ -74,6 +75,9 @@ type WordleGameProps = {
  *
  * Renders the daily Stoney word-guessing game.
  * Features a dynamic grid, a custom on-screen keyboard, and daily streak tracking.
+ * @param root0
+ * @param root0.items
+ * @param root0.categories
  */
 export default function WordleGame({ items, categories }: WordleGameProps) {
     const { colors } = useTheme();
@@ -150,6 +154,9 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
 
     // Load state on mount
     useEffect(() => {
+        /**
+         *
+         */
         const loadState = async () => {
             if (!dailyData) return;
             try {
@@ -239,7 +246,6 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
     /**
      * Evaluates the color status (Green, Yellow, Gray) of a specific letter in a guess.
      * Handles duplicate letters correctly (e.g., guessing "APPLE" when the target is "PAPER").
-     *
      * @param guessString The full string the user guessed
      * @param index The index of the letter currently being evaluated
      * @returns 'correct' (Green), 'present' (Yellow), or 'absent' (Gray)
@@ -257,10 +263,10 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
         // 2. Letter exists in the target word, but might be Yellow or Gray
         if (targetClean.includes(letter)) {
             // How many times does this letter appear in the actual target word?
-            let targetCount = targetClean.split('').filter((l) => l === letter).length;
+            const targetCount = targetClean.split('').filter((l) => l === letter).length;
 
             // How many times have we already awarded a 'Green' for this letter in the current guess?
-            let correctCount = guessString
+            const correctCount = guessString
                 .split('')
                 .filter((l, i) => l === letter && targetClean[i] === letter).length;
 
@@ -438,6 +444,10 @@ export default function WordleGame({ items, categories }: WordleGameProps) {
     );
 }
 
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         center: {

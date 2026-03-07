@@ -29,6 +29,9 @@ import { supabase } from '../lib/supabase';
 // Feedback categories — users pick one when submitting
 const CATEGORIES = ['Bug Report', 'Feature Request', 'Content Suggestion', 'Other'];
 
+/**
+ *
+ */
 export default function FeedbackPage() {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -43,6 +46,9 @@ export default function FeedbackPage() {
     const [error, setError] = useState('');
 
     // Handle feedback submission
+    /**
+     *
+     */
     const handleSubmit = async () => {
         // Validate — message is required
         if (!message.trim()) {
@@ -193,6 +199,10 @@ export default function FeedbackPage() {
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: {

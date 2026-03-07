@@ -29,6 +29,9 @@ import {
     FeedbackItem,
 } from '../../services/api';
 
+/**
+ *
+ */
 export default function AdminDashboard() {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -56,6 +59,9 @@ export default function AdminDashboard() {
         fetchFeedback();
     }, []);
 
+    /**
+     *
+     */
     const fetchCategories = async () => {
         const data = await getCategories();
         setCategories(data);
@@ -80,7 +86,6 @@ export default function AdminDashboard() {
     // Audio File Picker
     // --------------------------------------------------
     /**
-     * @function pickAudio
      * @description Opens the device's native file picker so the admin can select an audio file
      * (.mp3, .wav, etc) to accompany the new Stoney phrase.
      */
@@ -102,7 +107,6 @@ export default function AdminDashboard() {
     // Vocabulary Upload
     // --------------------------------------------------
     /**
-     * @function handleUpload
      * @description Validates the form inputs, then calls the `addVocabulary` service API
      * to insert the new phrase into Supabase and upload the audio to Supabase Storage.
      */
@@ -131,6 +135,10 @@ export default function AdminDashboard() {
     // --------------------------------------------------
     // Helper: format date string for display
     // --------------------------------------------------
+    /**
+     *
+     * @param dateStr
+     */
     const formatDate = (dateStr: string) => {
         const d = new Date(dateStr);
         return d.toLocaleDateString('en-US', {
@@ -145,6 +153,10 @@ export default function AdminDashboard() {
     // --------------------------------------------------
     // Category color mapping for feedback pills
     // --------------------------------------------------
+    /**
+     *
+     * @param cat
+     */
     const getCategoryColor = (cat: string) => {
         switch (cat) {
             case 'Bug Report':
@@ -312,6 +324,10 @@ export default function AdminDashboard() {
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: {

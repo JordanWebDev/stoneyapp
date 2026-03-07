@@ -24,6 +24,14 @@ interface LessonHeaderProps {
     total?: number;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.lessonTitle
+ * @param root0.tip
+ * @param root0.current
+ * @param root0.total
+ */
 export default function LessonHeader({
     lessonTitle = 'Vocabulary',
     tip = 'Listen to the words one by one. When you feel ready, switch to Quiz mode to practise.',
@@ -68,6 +76,10 @@ export default function LessonHeader({
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: {

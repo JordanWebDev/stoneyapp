@@ -18,6 +18,9 @@ import { View, Text, StyleSheet, FlatList, Pressable, TextInput } from 'react-na
 
 // Type definition for a single vocabulary item
 // This same type is used across the app
+/**
+ *
+ */
 export type PhraseItem = {
     id: string; // Unique identifier from the database
     stoney: string; // The word in Stoney Nakoda language
@@ -31,6 +34,13 @@ interface SidebarListProps {
     onSelect: (id: string) => void;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.items
+ * @param root0.activeId
+ * @param root0.onSelect
+ */
 export default function SidebarList({ items, activeId, onSelect }: SidebarListProps) {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -50,6 +60,12 @@ export default function SidebarList({ items, activeId, onSelect }: SidebarListPr
     }, [items, searchQuery]);
 
     // This function renders each row in the list
+    /**
+     *
+     * @param root0
+     * @param root0.item
+     * @param root0.index
+     */
     const renderItem = ({ item, index }: { item: PhraseItem; index: number }) => {
         const isActive = item.id === activeId; // Is this the selected item?
 
@@ -145,6 +161,10 @@ export default function SidebarList({ items, activeId, onSelect }: SidebarListPr
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         sidebar: {

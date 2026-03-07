@@ -24,6 +24,11 @@ interface QuizModeProps {
     items: VocabItem[];
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.items
+ */
 export default function QuizMode({ items }: QuizModeProps) {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -67,6 +72,7 @@ export default function QuizMode({ items }: QuizModeProps) {
 
     /**
      * Handle when the player taps an answer option
+     * @param answer
      */
     const handleAnswer = (answer: string) => {
         if (selected) return; // Don't allow changing answer
@@ -187,6 +193,10 @@ export default function QuizMode({ items }: QuizModeProps) {
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: { flex: 1, backgroundColor: colors.surface, padding: 24 },

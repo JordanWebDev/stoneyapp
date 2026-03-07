@@ -18,6 +18,9 @@ import { View, Text, TextInput, StyleSheet, Pressable, Modal } from 'react-nativ
 import { Stack, useRouter } from 'expo-router';
 import { supabase } from '../../lib/supabase';
 
+/**
+ *
+ */
 export default function AdminLayout() {
     const router = useRouter();
 
@@ -44,6 +47,9 @@ export default function AdminLayout() {
         checkSession();
     }, []);
 
+    /**
+     *
+     */
     const checkSession = async () => {
         const {
             data: { session },
@@ -55,6 +61,9 @@ export default function AdminLayout() {
     // --------------------------------------------------
     // Login with Supabase Auth
     // --------------------------------------------------
+    /**
+     *
+     */
     const handleLogin = async () => {
         setLoginLoading(true);
         setError('');
@@ -75,6 +84,9 @@ export default function AdminLayout() {
     // --------------------------------------------------
     // Logout — sign out, navigate to home, show popup
     // --------------------------------------------------
+    /**
+     *
+     */
     const handleLogout = async () => {
         await supabase.auth.signOut();
         setIsAuthenticated(false);
@@ -88,6 +100,9 @@ export default function AdminLayout() {
     // --------------------------------------------------
     // Change password via Supabase Auth
     // --------------------------------------------------
+    /**
+     *
+     */
     const handleChangePassword = async () => {
         if (!newPassword || newPassword.length < 4) {
             setPasswordMessage('Password must be at least 4 characters');

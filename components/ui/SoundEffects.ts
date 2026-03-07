@@ -16,6 +16,9 @@ import { Platform } from 'react-native';
 // IMPORTANT: We cache the AudioContext — browsers limit to ~6 instances
 let _audioContext: AudioContext | null = null;
 
+/**
+ *
+ */
 const getAudioContext = (): AudioContext | null => {
     if (Platform.OS !== 'web') return null;
     if (_audioContext) return _audioContext;
@@ -30,6 +33,10 @@ const getAudioContext = (): AudioContext | null => {
 /**
  * Play a short tone with the given frequency and duration.
  * Uses Web Audio API oscillator for instant, lightweight sounds.
+ * @param frequency
+ * @param duration
+ * @param type
+ * @param volume
  */
 const playTone = (
     frequency: number,

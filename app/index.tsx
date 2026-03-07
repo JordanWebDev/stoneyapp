@@ -68,6 +68,9 @@ const TABS: { key: TabKey; label: string; icon: string }[] = [
 // --------------------------------------------------
 // Main Component
 // --------------------------------------------------
+/**
+ *
+ */
 export default function HomeScreen() {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -85,6 +88,9 @@ export default function HomeScreen() {
         }
     }, [params.loggedOut]);
 
+    /**
+     *
+     */
     const dismissLogoutModal = () => {
         setShowLogoutModal(false);
     };
@@ -210,7 +216,6 @@ export default function HomeScreen() {
     }, [studiedIds]);
 
     /**
-     * @function loadProgress
      * @description Reads the user's progress (which words they have listened to) from device storage.
      * This ensures the progress bar remembers state between app sessions.
      */
@@ -224,7 +229,6 @@ export default function HomeScreen() {
     };
 
     /**
-     * @function fetchCategories
      * @description Fetches the list of lesson categories (e.g., Animals, Body) from the Supabase API.
      */
     const fetchCategories = async () => {
@@ -251,6 +255,10 @@ export default function HomeScreen() {
     // --------------------------------------------------
     // Tab Switching with Fade Animation
     // --------------------------------------------------
+    /**
+     *
+     * @param tab
+     */
     const switchTab = (tab: TabKey) => {
         if (tab === activeTab) return;
         playClickSound();
@@ -274,6 +282,10 @@ export default function HomeScreen() {
     // --------------------------------------------------
     // Phrase Selection
     // --------------------------------------------------
+    /**
+     *
+     * @param id
+     */
     const handleSelect = (id: string) => {
         const item = items.find((i) => i.id === id);
         if (item) {
@@ -317,6 +329,9 @@ export default function HomeScreen() {
         if (items.length === 0) return;
         setIsAutoPlaying(true);
 
+        /**
+         *
+         */
         const advanceToNext = () => {
             setActiveItem((current) => {
                 if (!current) return items[0];
@@ -349,11 +364,17 @@ export default function HomeScreen() {
         }
     }, []);
 
+    /**
+     *
+     */
     const toggleAutoPlay = () => {
         if (isAutoPlaying) stopAutoPlay();
         else startAutoPlay();
     };
 
+    /**
+     *
+     */
     const toggleSpeed = () => {
         setAutoPlaySpeed((s) => (s === 'normal' ? 'slow' : 'normal'));
     };
@@ -603,6 +624,10 @@ export default function HomeScreen() {
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: {

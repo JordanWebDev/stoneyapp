@@ -28,6 +28,16 @@ interface AutoPlayBarProps {
     totalItems: number;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.isPlaying
+ * @param root0.onTogglePlay
+ * @param root0.speed
+ * @param root0.onSpeedChange
+ * @param root0.currentIndex
+ * @param root0.totalItems
+ */
 export default function AutoPlayBar({
     isPlaying,
     onTogglePlay,
@@ -69,6 +79,10 @@ export default function AutoPlayBar({
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         bar: {

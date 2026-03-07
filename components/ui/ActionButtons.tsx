@@ -15,6 +15,11 @@ interface ActionButtonsProps {
     onPlayPress?: () => void;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.onPlayPress
+ */
 export default function ActionButtons({ onPlayPress }: ActionButtonsProps) {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
@@ -39,6 +44,10 @@ export default function ActionButtons({ onPlayPress }: ActionButtonsProps) {
 /* ──────────────────────────────────────────────
  * STYLES
  * ────────────────────────────────────────────── */
+/**
+ *
+ * @param colors
+ */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: {

@@ -3,11 +3,17 @@ import { supabase } from '../lib/supabase';
 // ----------------------------------------------------------------------------
 // Types
 // ----------------------------------------------------------------------------
+/**
+ *
+ */
 export type Category = {
     id: string;
     name: string;
 };
 
+/**
+ *
+ */
 export type PhraseItem = {
     id: string;
     stoney: string;
@@ -16,6 +22,9 @@ export type PhraseItem = {
     category_id?: string;
 };
 
+/**
+ *
+ */
 export type FeedbackItem = {
     id: string;
     user_name: string;
@@ -45,7 +54,6 @@ export async function getCategories(): Promise<Category[]> {
  * Fetches ALL vocabulary from Supabase using pagination.
  * Supabase returns a max of 1000 rows per request, so this loops
  * in batches of 1000 until all records are loaded (~9,904 total records).
- *
  * @param categoryId Optional category ID to filter the vocabulary by.
  */
 export async function getVocabulary(categoryId: string | null = null): Promise<PhraseItem[]> {
@@ -115,7 +123,6 @@ export async function getFeedback(): Promise<FeedbackItem[]> {
 
 /**
  * Uploads a new vocabulary item to the database, optionally uploading an audio file to storage.
- *
  * @param nativeWord The Stoney phrase
  * @param translation The English translation
  * @param categoryId Optional category ID

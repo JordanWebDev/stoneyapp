@@ -4,6 +4,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { LinearGradient } from 'expo-linear-gradient';
 
 // Enhanced Modern Palettes (Inspired by Tailwind Zinc + Orange / Shadcn UI)
+/**
+ *
+ */
 export const lightColors = {
     surface: '#ffffff', // White card
     background: '#fafafa', // zinc-50 (Clean, modern app background)
@@ -39,6 +42,9 @@ export const lightColors = {
     white20: 'rgba(255,255,255,0.2)',
 };
 
+/**
+ *
+ */
 export const darkColors = {
     surface: '#18181b', // zinc-900 (Card background)
     background: '#09090b', // zinc-950 (Deep dark app background)
@@ -74,6 +80,9 @@ export const darkColors = {
     white20: 'rgba(255,255,255,0.1)',
 };
 
+/**
+ *
+ */
 export type ThemeColors = typeof lightColors;
 
 type ThemeContextType = {
@@ -84,6 +93,11 @@ type ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+/**
+ *
+ * @param root0
+ * @param root0.children
+ */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const systemColorScheme = useColorScheme();
     const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
@@ -101,6 +115,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         });
     }, [systemColorScheme]);
 
+    /**
+     *
+     */
     const toggleTheme = () => {
         setIsDarkMode((prev) => {
             const next = !prev;
@@ -129,6 +146,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     );
 }
 
+/**
+ *
+ */
 export function useTheme() {
     const context = useContext(ThemeContext);
     if (!context) {
@@ -137,6 +157,12 @@ export function useTheme() {
     return context;
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.children
+ * @param root0.style
+ */
 export function AppBackground({ children, style }: { children: React.ReactNode; style?: any }) {
     const { colors } = useTheme();
     // Default to the solid background if gradient is unavailable (fallback)
