@@ -18,7 +18,7 @@ You **must** configure `app.json` to include the `baseUrl` under the `experiment
 }
 ```
 
-*(Note: I have already configured this for you!)*
+> Note: I have already configured this for you!
 
 ## 2. Generate the Static Build
 
