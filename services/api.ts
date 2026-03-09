@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 // Types
 // ----------------------------------------------------------------------------
 /**
- *
+ * Represents a learning category (e.g., "Animals", "Colors").
  */
 export type Category = {
     id: string;
@@ -12,7 +12,8 @@ export type Category = {
 };
 
 /**
- *
+ * Represents a single vocabulary entry.
+ * 'stoney' is the native word, 'english' is the translation.
  */
 export type PhraseItem = {
     id: string;
@@ -23,7 +24,7 @@ export type PhraseItem = {
 };
 
 /**
- *
+ * Represents user feedback submitted via the Feedback page.
  */
 export type FeedbackItem = {
     id: string;
@@ -36,12 +37,18 @@ export type FeedbackItem = {
 // ----------------------------------------------------------------------------
 // API Services
 // ----------------------------------------------------------------------------
+
 /**
- * Fetches all lesson categories from the database, ordered alphabetically by name.
+ * Fetches all lesson categories from the database.
+ * We order by name to ensure consistent UI display.
  */
 export async function getCategories(): Promise<Category[]> {
     try {
-        const { data, error } = await supabase.from('categories').select('id, name').order('name');
+        const { data, error } = await supabase
+            .from('categories')
+            .select('id, name')
+            .order('name');
+
         if (error) throw error;
         return data || [];
     } catch (err) {
@@ -51,10 +58,14 @@ export async function getCategories(): Promise<Category[]> {
 }
 
 /**
- * Fetches ALL vocabulary from Supabase using pagination.
- * Supabase returns a max of 1000 rows per request, so this loops
- * in batches of 1000 until all records are loaded (~9,904 total records).
- * @param categoryId Optional category ID to filter the vocabulary by.
+ * Fetches vocabulary from Supabase with support for large datasets.
+ * 
+ * JUNIOR DEV NOTE: Supabase (and many APIs) has a limit on how many rows 
+ * it returns in one go (usually 1000). To get all 8,000+ words, we use 
+ * a 'Pagination' loop. We fetch rows in batches (0-999, 1000-1999, etc.) 
+ * until the database says there are no more.
+ * 
+ * @param categoryId Optional category ID to filter results.
  */
 export async function getVocabulary(categoryId: string | null = null): Promise<PhraseItem[]> {
     try {
@@ -64,6 +75,7 @@ export async function getVocabulary(categoryId: string | null = null): Promise<P
         let hasMore = true;
 
         while (hasMore) {
+            // Calculate the range for this batch
             const from = page * PAGE_SIZE;
             const to = from + PAGE_SIZE - 1;
 
@@ -73,6 +85,7 @@ export async function getVocabulary(categoryId: string | null = null): Promise<P
                 .order('id', { ascending: true })
                 .range(from, to);
 
+            // Apply filter if a category is selected
             if (categoryId) {
                 query = query.eq('category_id', categoryId);
             }
@@ -82,6 +95,7 @@ export async function getVocabulary(categoryId: string | null = null): Promise<P
 
             if (data && data.length > 0) {
                 allData = [...allData, ...data];
+                // If we got exactly PAGE_SIZE, there's likely more data to fetch
                 hasMore = data.length === PAGE_SIZE;
                 page++;
             } else {
@@ -89,7 +103,12 @@ export async function getVocabulary(categoryId: string | null = null): Promise<P
             }
         }
 
-        // Format raw database records into the UI PhraseItem structure
+        /**
+         * DATA MAPPING:
+         * We convert the database column names (snake_case) to our 
+         * UI-friendly property names (camelCase) here. This keeps the 
+         * rest of our app code clean and decoupled from DB naming.
+         */
         return allData.map((row: any) => ({
             id: row.id,
             stoney: row.native_word,
@@ -104,7 +123,7 @@ export async function getVocabulary(categoryId: string | null = null): Promise<P
 }
 
 /**
- * Fetches all user feedback from the database.
+ * Fetches all user feedback, showing the newest first.
  */
 export async function getFeedback(): Promise<FeedbackItem[]> {
     try {
@@ -122,11 +141,12 @@ export async function getFeedback(): Promise<FeedbackItem[]> {
 }
 
 /**
- * Uploads a new vocabulary item to the database, optionally uploading an audio file to storage.
- * @param nativeWord The Stoney phrase
- * @param translation The English translation
- * @param categoryId Optional category ID
- * @param audioFile Optional audio file (from DocumentPicker)
+ * Adds a new vocabulary item.
+ * 
+ * JUNIOR DEV NOTE: This function handles two steps:
+ * 1. If an audio file is picked, we upload it to Supabase 'Storage' first.
+ * 2. We then save the record to the 'Database' table, including the URL 
+ *    of the uploaded audio file.
  */
 export async function addVocabulary(
     nativeWord: string,
@@ -139,8 +159,12 @@ export async function addVocabulary(
     // 1. Upload audio file if provided
     if (audioFile && !audioFile.canceled && audioFile.assets?.[0]) {
         const asset = audioFile.assets[0];
+
+        // Convert the local file URI to a binary 'Blob' that Supabase can upload
         const res = await fetch(asset.uri);
         const blob = await res.blob();
+
+        // Create a unique filename to prevent overwriting existing files
         const fileName = `admin_${Date.now()}_${asset.name}`;
 
         const { error: uploadError } = await supabase.storage.from('audio').upload(fileName, blob, {
@@ -149,11 +173,12 @@ export async function addVocabulary(
 
         if (uploadError) throw uploadError;
 
+        // Get the public URL so users can stream the audio back later
         const { data: publicUrlData } = supabase.storage.from('audio').getPublicUrl(fileName);
         audioUrl = publicUrlData.publicUrl;
     }
 
-    // 2. Insert record into database
+    // 2. Insert the final record into the 'vocabulary' table
     const { error: insertError } = await supabase.from('vocabulary').insert([
         {
             native_word: nativeWord,
@@ -164,4 +189,13 @@ export async function addVocabulary(
     ]);
 
     if (insertError) throw insertError;
+}
+
+/**
+ * Deletes a vocabulary item.
+ * @param id The ID of the database row to delete.
+ */
+export async function deleteVocabulary(id: string): Promise<void> {
+    const { error } = await supabase.from('vocabulary').delete().eq('id', id);
+    if (error) throw error;
 }

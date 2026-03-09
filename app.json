@@ -1,28 +1,32 @@
 {
     "expo": {
-        "name": "stoney-app",
+        "name": "Stoney Nakoda: Language Journey",
         "slug": "stoney-app",
         "scheme": "stoneyapp",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
-        "userInterfaceStyle": "light",
+        "userInterfaceStyle": "dark",
         "splash": {
             "image": "./assets/splash-icon.png",
             "resizeMode": "contain",
-            "backgroundColor": "#ffffff"
+            "backgroundColor": "#09090b"
         },
         "ios": {
-            "supportsTablet": true
+            "supportsTablet": true,
+            "bundleIdentifier": "com.stoney.languageapp",
+            "buildNumber": "1.1.0",
+            "infoPlist": {
+                "NSMicrophoneUsageDescription": "This app does not use the microphone."
+            }
         },
         "android": {
+            "package": "com.stoney.languageapp",
+            "versionCode": 2,
             "adaptiveIcon": {
-                "backgroundColor": "#E6F4FE",
-                "foregroundImage": "./assets/android-icon-foreground.png",
-                "backgroundImage": "./assets/android-icon-background.png",
-                "monochromeImage": "./assets/android-icon-monochrome.png"
-            },
-            "predictiveBackGestureEnabled": false
+                "backgroundColor": "#09090b",
+                "foregroundImage": "./assets/icon.png"
+            }
         },
         "web": {
             "favicon": "./assets/favicon.png",

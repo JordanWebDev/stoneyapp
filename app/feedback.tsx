@@ -13,7 +13,7 @@ import { useTheme, AppBackground } from '../contexts/ThemeContext';
  * Route: /feedback
  */
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import {
     View,
     Text,
@@ -22,6 +22,8 @@ import {
     Pressable,
     ScrollView,
     ActivityIndicator,
+    Animated,
+    Platform,
 } from 'react-native';
 import { Link } from 'expo-router';
 import { supabase } from '../lib/supabase';
@@ -30,11 +32,12 @@ import { supabase } from '../lib/supabase';
 const CATEGORIES = ['Bug Report', 'Feature Request', 'Content Suggestion', 'Other'];
 
 /**
- *
+ * FeedbackPage component
  */
 export default function FeedbackPage() {
     const { colors } = useTheme();
     const styles = useMemo(() => createStyles(colors), [colors]);
+
     // Form fields
     const [name, setName] = useState('');
     const [category, setCategory] = useState('Other');
@@ -45,10 +48,29 @@ export default function FeedbackPage() {
     const [submitted, setSubmitted] = useState(false);
     const [error, setError] = useState('');
 
+    // Animation values
+    const scaleAnim = useRef(new Animated.Value(0)).current;
+    const opacityAnim = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        if (submitted) {
+            Animated.parallel([
+                Animated.spring(scaleAnim, {
+                    toValue: 1,
+                    tension: 50,
+                    friction: 7,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(opacityAnim, {
+                    toValue: 1,
+                    duration: 400,
+                    useNativeDriver: true,
+                }),
+            ]).start();
+        }
+    }, [submitted]);
+
     // Handle feedback submission
-    /**
-     *
-     */
     const handleSubmit = async () => {
         // Validate — message is required
         if (!message.trim()) {
@@ -87,17 +109,29 @@ export default function FeedbackPage() {
         return (
             <AppBackground style={styles.container}>
                 <View style={styles.card}>
-                    <Text style={styles.successIcon}>✅</Text>
-                    <Text style={styles.successTitle}>Thank You!</Text>
-                    <Text style={styles.successText}>
-                        Your feedback has been submitted successfully.{'\n'}
+                    <Animated.Text
+                        style={[
+                            styles.successIcon,
+                            { transform: [{ scale: scaleAnim }], opacity: opacityAnim },
+                        ]}
+                    >
+                        ✅
+                    </Animated.Text>
+                    <Animated.Text style={[styles.successTitle, { opacity: opacityAnim }]}>
+                        Thank You!
+                    </Animated.Text>
+                    <Animated.Text style={[styles.successText, { opacity: opacityAnim }]}>
+                        Your feedback has been submitted successfully.
+                        {'\n'}
                         We appreciate your input!
-                    </Text>
-                    <Link href="/" asChild>
-                        <Pressable style={styles.backBtn}>
-                            <Text style={styles.backBtnText}>← Back to Learning</Text>
-                        </Pressable>
-                    </Link>
+                    </Animated.Text>
+                    <Animated.View style={{ opacity: opacityAnim }}>
+                        <Link href="/" asChild>
+                            <Pressable style={styles.backBtn}>
+                                <Text style={styles.backBtnText}>← Back to Learning</Text>
+                            </Pressable>
+                        </Link>
+                    </Animated.View>
                 </View>
             </AppBackground>
         );
@@ -135,6 +169,7 @@ export default function FeedbackPage() {
                         placeholderTextColor="#a8a29e"
                         value={name}
                         onChangeText={setName}
+                        autoCapitalize="words"
                     />
 
                     {/* Category picker */}
@@ -196,13 +231,6 @@ export default function FeedbackPage() {
     );
 }
 
-/* ──────────────────────────────────────────────
- * STYLES
- * ────────────────────────────────────────────── */
-/**
- *
- * @param colors
- */
 const createStyles = (colors: any) =>
     StyleSheet.create({
         container: {
@@ -211,8 +239,6 @@ const createStyles = (colors: any) =>
             padding: 24,
             alignItems: 'center',
         },
-
-        // Back link
         backLink: {
             alignSelf: 'flex-start',
             marginBottom: 16,
@@ -223,8 +249,6 @@ const createStyles = (colors: any) =>
             color: colors.primary,
             fontWeight: '600',
         },
-
-        // Form card
         card: {
             width: '100%',
             maxWidth: 560,
@@ -233,6 +257,11 @@ const createStyles = (colors: any) =>
             padding: 32,
             borderWidth: 1,
             borderColor: colors.border,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.1,
+            shadowRadius: 10,
+            elevation: 3,
         },
         formTitle: {
             fontSize: 24,
@@ -245,8 +274,6 @@ const createStyles = (colors: any) =>
             color: colors.textMuted,
             marginBottom: 24,
         },
-
-        // Labels and inputs
         label: {
             fontSize: 13,
             fontWeight: '600',
@@ -267,8 +294,6 @@ const createStyles = (colors: any) =>
             minHeight: 120,
             paddingTop: 12,
         },
-
-        // Category picker
         categoryRow: {
             flexDirection: 'row',
             flexWrap: 'wrap',
@@ -295,8 +320,6 @@ const createStyles = (colors: any) =>
             color: colors.surface,
             fontWeight: '600',
         },
-
-        // Submit button
         submitBtn: {
             marginTop: 28,
             backgroundColor: colors.primary,
@@ -311,8 +334,6 @@ const createStyles = (colors: any) =>
             fontSize: 16,
             fontWeight: '700',
         },
-
-        // Error message
         errorBox: {
             backgroundColor: '#fef2f2',
             borderWidth: 1,
@@ -326,37 +347,35 @@ const createStyles = (colors: any) =>
             fontSize: 13,
             fontWeight: '500',
         },
-
-        // Success state
         successIcon: {
-            fontSize: 48,
+            fontSize: 64,
             textAlign: 'center',
-            marginBottom: 12,
+            marginBottom: 16,
         },
         successTitle: {
             fontSize: 24,
             fontWeight: '700',
             color: colors.text,
             textAlign: 'center',
-            marginBottom: 8,
+            marginBottom: 12,
         },
         successText: {
-            fontSize: 15,
-            color: colors.textMutedDark,
+            fontSize: 16,
+            color: colors.textSubtle,
             textAlign: 'center',
-            lineHeight: 22,
-            marginBottom: 24,
+            lineHeight: 24,
+            marginBottom: 32,
         },
         backBtn: {
             backgroundColor: colors.primary,
-            paddingVertical: 12,
-            paddingHorizontal: 24,
-            borderRadius: 10,
+            paddingVertical: 14,
+            paddingHorizontal: 28,
+            borderRadius: 12,
             alignSelf: 'center',
         },
         backBtnText: {
             color: colors.surface,
-            fontSize: 15,
-            fontWeight: '600',
+            fontSize: 16,
+            fontWeight: '700',
         },
     });
